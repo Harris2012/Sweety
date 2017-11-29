@@ -1,0 +1,20 @@
+﻿<mui:ModernWindow x:Class="Sweety.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+        xmlns:local="clr-namespace:Sweety"
+        WindowStartupLocation="CenterScreen"
+        Title="Sweety"
+        Height="500" Width="750" MinHeight="500" MinWidth="750"
+        IsTitleVisible="True"
+        ContentSource="/Pages/StartPage.xaml">
+
+    <mui:ModernWindow.MenuLinkGroups>
+        <mui:LinkGroup DisplayName="See your smile">
+            <mui:LinkGroup.Links>
+                <mui:Link DisplayName="Start" Source="/Pages/StartPage.xaml" />
+            </mui:LinkGroup.Links>
+        </mui:LinkGroup>
+    </mui:ModernWindow.MenuLinkGroups>
+
+</mui:ModernWindow>
