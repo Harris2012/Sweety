@@ -57,7 +57,7 @@ namespace Sweety.Pages
 
                     try
                     {
-                        List<OriginEntity> originEntityList = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
+                        List<OriginEntity> originEntityList = ExcelHelper.ReadFromExcel<OriginEntity>(inputFilePath);
 
                         List<TargetEntity> targetEntityList = Process(originEntityList);
 
@@ -88,7 +88,106 @@ namespace Sweety.Pages
         {
             List<TargetEntity> returnValue = new List<TargetEntity>();
 
+            var groups = originEntityList.GroupBy(v => v.BusinessNo).ToList();
+
+            foreach (var group in groups)
+            {
+                StringBuilder remarkBuilder = new StringBuilder();
+                if (group.Count() == 1)
+                {
+                    OriginEntity originEntity = group.First();
+                    remarkBuilder.Append("仅此一单。");
+
+                    TargetEntity targetEntity = ToTargetEntity(originEntity);
+
+                    if (originEntity.SellCount == originEntity.BuyCount)
+                    {
+                        targetEntity.SaleMode = "直运";
+                        remarkBuilder.Append("进货数等于销货数。");
+                    }
+                    else if (originEntity.SellCount < originEntity.BuyCount)
+                    {
+                        targetEntity.SaleMode = "滞销";
+                        remarkBuilder.Append("进货数大于销货数。");
+                    }
+                    else
+                    {
+                        targetEntity.SaleMode = "超卖";
+                        remarkBuilder.Append("进货数小于销货数。");
+                    }
+
+                    targetEntity.Remark = remarkBuilder.ToString();
+
+                    returnValue.Add(targetEntity);
+                }
+                else
+                {
+                    remarkBuilder.Append("交易已被拆单。");
+
+                    int totalBuyCount = group.Sum(v => v.BuyCount);
+                    int totalSellCount = group.Sum(v => v.SellCount);
+
+                    string saleMode = string.Empty;
+
+                    if (totalSellCount == totalBuyCount)
+                    {
+                        saleMode = "整体直运";
+                        remarkBuilder.Append("整体进货数等于销货数。");
+                    }
+                    else if (totalSellCount < totalBuyCount)
+                    {
+                        saleMode = "整体滞销";
+                        remarkBuilder.Append("整体进货数大于销货数。");
+                    }
+                    else
+                    {
+                        saleMode = "整体超卖";
+                        remarkBuilder.Append("整体进货数小于销货数。");
+                    }
+
+                    foreach (var originEntity in group)
+                    {
+                        StringBuilder singleRemarkBuilder = new StringBuilder();
+
+                        TargetEntity targetEntity = ToTargetEntity(originEntity);
+
+                        if (originEntity.SellCount == originEntity.BuyCount)
+                        {
+                            targetEntity.SaleMode = saleMode;
+                            singleRemarkBuilder.Append("本单进货数等于销货数。");
+                        }
+                        else if (originEntity.SellCount < originEntity.BuyCount)
+                        {
+                            targetEntity.SaleMode = saleMode;
+                            singleRemarkBuilder.Append("进货数大于销货数。");
+                        }
+                        else
+                        {
+                            targetEntity.SaleMode = saleMode;
+                            singleRemarkBuilder.Append("进货数小于销货数。");
+                        }
+
+                        targetEntity.Remark = remarkBuilder.ToString() + singleRemarkBuilder.ToString();
+
+                        returnValue.Add(targetEntity);
+                    }
+                }
+            }
+
             return returnValue;
+        }
+
+        private static TargetEntity ToTargetEntity(OriginEntity originEntity)
+        {
+            TargetEntity targetEntity = new TargetEntity();
+
+            targetEntity.BusinessNo = originEntity.BusinessNo;
+            targetEntity.PaperNo = originEntity.PaperNo;
+            targetEntity.ProductNo = originEntity.ProductNo;
+            targetEntity.BuyCount = originEntity.BuyCount;
+            targetEntity.SellCount = originEntity.SellCount;
+
+            return targetEntity;
         }
 
         private void AppendMessage(string message)

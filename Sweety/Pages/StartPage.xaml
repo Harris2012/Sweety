@@ -31,8 +31,8 @@
         <TextBlock Grid.Row="1" Grid.Column="0">Output File</TextBlock>
         <TextBox Grid.Row="1" Grid.Column="1" TabIndex="2" IsTabStop="True" Name="OutputFilePathTextBox" MouseDoubleClick="OutputFilePathTextBox_MouseDoubleClick"></TextBox>
 
-        <TextBlock Grid.Row="2" Grid.Column="0">Mode</TextBlock>
-        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+        <TextBlock Grid.Row="2" Grid.Column="0" Visibility="Collapsed">Mode</TextBlock>
+        <StackPanel Grid.Row="2" Grid.Column="1" Visibility="Collapsed" Orientation="Horizontal">
             <StackPanel.Resources>
                 <ResourceDictionary Source="/Resource/ResDictionary2.xaml" />
             </StackPanel.Resources>
