@@ -22,5 +22,11 @@ namespace Sweety.Entity
 
         [ExcelColumn("销售数", 5)]
         public int SellCount { get; set; }
+
+        [ExcelColumn("销售模式", 6)]
+        public string SaleMode { get; set; }
+
+        [ExcelColumn("备注", 7)]
+        public string Remark { get; set; }
     }
 }

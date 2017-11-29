@@ -41,8 +41,8 @@ namespace Sweety.Pages
             {
                 AppendMessage("=================");
 
-                string plainFilePath = InputFilePathTextBox.Text;
-                string cipherFilePath = OutputFilePathTextBox.Text;
+                string inputFilePath = InputFilePathTextBox.Text;
+                string outputFilePath = OutputFilePathTextBox.Text;
                 ValueType valueType = ValueType.RSA;
                 if (AESRadioButton.IsChecked.HasValue && AESRadioButton.IsChecked.Value)
                 {
@@ -53,13 +53,26 @@ namespace Sweety.Pages
 
                 ThreadPool.QueueUserWorkItem(new WaitCallback(item =>
                 {
-                    var returnValue = Processor.Start();
+                    string message = string.Empty;
+
+                    try
+                    {
+                        List<OriginEntity> originEntityList = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
+
+                        List<TargetEntity> targetEntityList = Process(originEntityList);
+
+                        ExcelHelper.WriteToExcel(outputFilePath, targetEntityList);
+                    }
+                    catch (Exception ex)
+                    {
+                        message = "程序出错了" + Environment.NewLine + ex.ToString();
+                    }
 
                     this.Dispatcher.Invoke(new Action(() =>
                     {
                         SetStatus(Status.Ready, string.Empty);
 
-                        AppendMessage(returnValue);
+                        AppendMessage(message);
                     }));
 
                 }), 21);
@@ -69,6 +82,13 @@ namespace Sweety.Pages
                 AppendMessage(ex.ToString());
 
             }
+        }
+
+        private List<TargetEntity> Process(List<OriginEntity> originEntityList)
+        {
+            List<TargetEntity> returnValue = new List<TargetEntity>();
+
+            return returnValue;
         }
 
         private void AppendMessage(string message)
