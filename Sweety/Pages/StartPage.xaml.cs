@@ -63,7 +63,7 @@ namespace Sweety.Pages
 
                         ExcelHelper.WriteToExcel(outputFilePath, targetEntityList);
 
-                        message = "Success。";
+                        message = "Success";
                     }
                     catch (Exception ex)
                     {
