@@ -10,38 +10,12 @@ namespace Sweety
 {
     class ExcelHelper
     {
-        private static Excel.Application coreApp;
-        private static readonly object lockObject = new object();
-
-        /// <summary>
-        /// Key: ExcelFilePath
-        /// Value: Excel.WorkBook
-        /// </summary>
-        //private static readonly ConcurrentDictionary<string, Excel.Workbook> bookMap = new ConcurrentDictionary<string, Excel.Workbook>();
-
-        public static void Stop()
-        {
-            if (coreApp != null)
-            {
-                coreApp.Quit();
-            }
-        }
-
         private static Excel.Application GetApplication()
         {
-            if (coreApp == null)
-            {
-                lock (lockObject)
-                {
-                    if (coreApp == null)
-                    {
-                        coreApp = new Excel.Application();
-                        coreApp.Visible = false;
-                        coreApp.DisplayAlerts = false;
-                        coreApp.ScreenUpdating = false;
-                    }
-                }
-            }
+            Excel.Application coreApp = new Excel.Application();
+            coreApp.Visible = false;
+            coreApp.DisplayAlerts = false;
+            coreApp.ScreenUpdating = false;
 
             return coreApp;
         }
@@ -72,7 +46,7 @@ namespace Sweety
 
                     Excel.Range range = sheet.Range[ToColumnLabel(1) + 1, ToColumnLabel(maxColumn) + maxRow];
 
-                    for (int row = 1; row <= maxRow; row++)
+                    for (int row = 2; row <= maxRow; row++)
                     {
                         T entity = new T();
                         foreach (var property in type.GetProperties())
@@ -120,6 +94,7 @@ namespace Sweety
             }
 
             book.Close(false);
+            app.Quit();
 
             return entityList;
         }
@@ -182,6 +157,7 @@ namespace Sweety
             }
             book.SaveAs(excelFilePath);
             book.Close();
+            app.Quit();
         }
 
         private static int GetMaxRow(Excel.Worksheet sheet)
