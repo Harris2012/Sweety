@@ -17,7 +17,7 @@ namespace Sweety
         /// Key: ExcelFilePath
         /// Value: Excel.WorkBook
         /// </summary>
-        private static readonly ConcurrentDictionary<string, Excel.Workbook> bookMap = new ConcurrentDictionary<string, Excel.Workbook>();
+        //private static readonly ConcurrentDictionary<string, Excel.Workbook> bookMap = new ConcurrentDictionary<string, Excel.Workbook>();
 
         public static void Stop()
         {
@@ -36,9 +36,9 @@ namespace Sweety
                     if (coreApp == null)
                     {
                         coreApp = new Excel.Application();
-                        coreApp.Visible = false;
+                        coreApp.Visible = true;
                         coreApp.DisplayAlerts = false;
-                        coreApp.ScreenUpdating = false;
+                        //coreApp.ScreenUpdating = false;
                     }
                 }
             }
@@ -46,22 +46,22 @@ namespace Sweety
             return coreApp;
         }
 
-        private static Excel.Workbook GetWorkBook(Excel.Application app, string excelFilePath)
-        {
-            return bookMap.GetOrAdd(excelFilePath, v =>
-            {
-                return app.Workbooks.Open(excelFilePath);
-            });
-        }
+        //private static Excel.Workbook GetWorkBook(Excel.Application app, string excelFilePath)
+        //{
+        //    return bookMap.GetOrAdd(excelFilePath, v =>
+        //    {
+        //        return ;
+        //    });
+        //}
 
-        private static void CloseWorkBook(string excelFilePath)
-        {
-            Excel.Workbook book;
-            if (bookMap.TryRemove(excelFilePath, out book))
-            {
-                book.Close();
-            }
-        }
+        //public static void CloseWorkBook(string excelFilePath)
+        //{
+        //    Excel.Workbook book;
+        //    if (bookMap.TryRemove(excelFilePath, out book))
+        //    {
+        //        book.Close();
+        //    }
+        //}
 
         public static List<T> ReadFromExcel<T>(string excelFilePath) where T : class, new()
         {
@@ -78,7 +78,7 @@ namespace Sweety
             }
 
             Excel.Application app = GetApplication();
-            Excel.Workbook book = GetWorkBook(app, excelFilePath);
+            Excel.Workbook book = app.Workbooks.Open(excelFilePath);
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
                 Excel.Worksheet sheet = book.Sheets[sheetIndex];
@@ -136,9 +136,76 @@ namespace Sweety
                 }
             }
 
-            CloseWorkBook(excelFilePath);
+            book.Close(false);
 
             return entityList;
+        }
+
+        /// <summary>
+        /// 将数据写入excel文件并关闭excel文件
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="excelFilePath"></param>
+        /// <param name="entityList"></param>
+        public static void WriteToExcel<T>(string excelFilePath, List<T> entityList)
+        {
+            var type = typeof(T);
+            ExcelTableAttribute tableAttribute = (ExcelTableAttribute)type.GetCustomAttributes(typeof(ExcelTableAttribute), false)[0];
+            var tableName = tableAttribute.Name;
+            var properties = type.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            if (string.IsNullOrEmpty(tableName) || properties.Length == 0)
+            {
+                return;
+            }
+
+            Excel.Application app = GetApplication();
+            Excel.Workbook book = null;
+            if (System.IO.File.Exists(excelFilePath))
+            {
+                book = app.Workbooks.Open(excelFilePath);
+            }
+            else
+            {
+                book = app.Workbooks.Add();
+            }
+
+            for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
+            {
+                Excel.Worksheet sheet = book.Sheets[sheetIndex];
+                if (sheet.Name.Equals(tableName))
+                {
+                    book.Close(false);
+
+                    return;
+                }
+            }
+
+            Excel.Worksheet newWorkSheet = book.Worksheets.Add();
+            newWorkSheet.Name = tableName;
+
+            var startCell = ToColumnLabel(1) + 1;
+            var endCell = ToColumnLabel(properties.Length) + (entityList.Count + 1);
+            Excel.Range range = newWorkSheet.Range[startCell, endCell];
+            foreach (var property in properties)
+            {
+                ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+
+                Excel.Range titleCellRange = range[1, columnAttribute.ColumnIndex];
+                titleCellRange.Value = columnAttribute.Name;
+            }
+
+            foreach (var property in properties)
+            {
+                ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+
+                for (int row = 0; row < entityList.Count; row++)
+                {
+                    Excel.Range valueCellRange = range[row + 2, columnAttribute.ColumnIndex];
+                    valueCellRange.Value = property.GetValue(entityList[row], null);
+                }
+            }
+            book.Close(true, excelFilePath);
         }
 
         private static int GetMaxRow(Excel.Worksheet sheet)
@@ -192,14 +259,6 @@ namespace Sweety
             }
 
             return string.Join(string.Empty, list);
-        }
-
-        public static void WriteToExcel(string excelFilePath, List<ProductEntity> entityList)
-        {
-            foreach (var entity in entityList)
-            {
-
-            }
         }
     }
 }

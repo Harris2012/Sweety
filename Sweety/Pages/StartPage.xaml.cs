@@ -143,9 +143,9 @@ namespace Sweety.Pages
                 productEntityList.Add(productEntity);
             }
 
-            var xx = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
+            //var xx = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
 
-            ExcelHelper.WriteToExcel(@"F:\sample.xlsx", productEntityList);
+            ExcelHelper.WriteToExcel(@"F:\sample2.xlsx", productEntityList);
         }
     }
 }
