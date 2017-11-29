@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using Sweety.Entity;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -129,7 +130,24 @@ namespace Sweety.Pages
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            {
+                List<ProductEntity> productEntityList = new List<ProductEntity>();
 
+                var names = new List<string> { "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝", "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓" };
+                for (int i = 0; i < names.Count; i++)
+                {
+                    var productEntity = new ProductEntity();
+
+                    productEntity.ProductNo = string.Format("P{0:D5}", i + 1);
+                    productEntity.Name = names[i];
+
+                    productEntityList.Add(productEntity);
+                }
+            }
+
+
+
+            var x = 0;
         }
     }
 }

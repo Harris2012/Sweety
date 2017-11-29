@@ -8,14 +8,17 @@ namespace Sweety
 {
     class ExcelHelper
     {
-        public Dictionary<string, List<EntityBase>> ReadFromExcel(string excelFilePath)
+        public List<ExcelTable> ReadFromExcel(string excelFilePath)
         {
             throw new NotImplementedException();
         }
 
-        public static void WriteToExcel(string excelFilePath, Dictionary<string, List<EntityBase>> entityList)
+        public static void WriteToExcel(string excelFilePath, Dictionary<string, List<ExcelTable>> entityList)
         {
-
+            foreach (var entity in entityList)
+            {
+                
+            }
         }
     }
 }
