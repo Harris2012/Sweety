@@ -145,6 +145,7 @@ namespace Sweety.Pages
                 }
             }
 
+            var dt = ExcelHelper.ReadFromExcel(@"F:\sample.xlsx");
 
 
             var x = 0;

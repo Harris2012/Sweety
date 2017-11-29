@@ -24,5 +24,10 @@ namespace Sweety
         {
             InitializeComponent();
         }
+
+        private void ModernWindow_Closed(object sender, EventArgs e)
+        {
+            ExcelHelper.Stop();
+        }
     }
 }

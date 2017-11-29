@@ -4,6 +4,7 @@
         xmlns:mui="http://firstfloorsoftware.com/ModernUI"
         xmlns:local="clr-namespace:Sweety"
         WindowStartupLocation="CenterScreen"
+        Closed="ModernWindow_Closed"
         Title="Sweety"
         Height="500" Width="750" MinHeight="500" MinWidth="750"
         IsTitleVisible="True"
