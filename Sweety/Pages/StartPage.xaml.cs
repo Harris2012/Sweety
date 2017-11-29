@@ -28,14 +28,12 @@ namespace Sweety.Pages
             InitializeComponent();
         }
 
-        private void EncryptCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void StartCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = !string.IsNullOrEmpty(PlainFilePathTextBox.Text)
-                && !string.IsNullOrEmpty(CipherFilePathTextBox.Text)
-                && !string.IsNullOrEmpty(KeyFilePathTextBox.Text);
+            e.CanExecute = !string.IsNullOrEmpty(PlainFilePathTextBox.Text) && !string.IsNullOrEmpty(CipherFilePathTextBox.Text);
         }
 
-        private void EncryptCommand_Executed(object sender, ExecutedRoutedEventArgs e)
+        private void StartCommand_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             try
             {
@@ -43,7 +41,6 @@ namespace Sweety.Pages
 
                 string plainFilePath = PlainFilePathTextBox.Text;
                 string cipherFilePath = CipherFilePathTextBox.Text;
-                string keyFilePath = KeyFilePathTextBox.Text;
                 ValueType valueType = ValueType.RSA;
                 if (AESRadioButton.IsChecked.HasValue && AESRadioButton.IsChecked.Value)
                 {
@@ -126,33 +123,13 @@ namespace Sweety.Pages
         }
 
         /// <summary>
-        /// 打开密钥文件
+        /// 生成测试数据
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void KeyFilePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog dialog = new OpenFileDialog();
 
-            if (AESRadioButton.IsChecked.HasValue && AESRadioButton.IsChecked.Value)
-            {
-                dialog.Filter = "AES密钥|*.ksaes";
-            }
-            else
-            {
-                dialog.Filter = "RSA公钥|*.ksrsapub|RSA私钥|*.ksrsapri";
-            }
-
-            bool? result = dialog.ShowDialog();
-            if (result != null && result.Value)
-            {
-                ((TextBox)sender).Text = dialog.FileName;
-            }
-        }
-
-        private void PlainFilePathTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            CipherFilePathTextBox.Text = PlainFilePathTextBox.Text + ".ks";
         }
     }
 }

@@ -76,6 +76,10 @@
     <Compile Include="Controls\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entity\Origin.cs" />
+    <Compile Include="Model\BusinessMode.cs" />
+    <Compile Include="Model\Paper.cs" />
+    <Compile Include="Model\Business.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />

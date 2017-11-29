@@ -26,7 +26,7 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Input File</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" TextChanged="PlainFilePathTextBox_TextChanged" IsTabStop="True" TabIndex="1" Name="PlainFilePathTextBox" MouseDoubleClick="PlainFilePathTextBox_MouseDoubleClick"></TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" IsTabStop="True" TabIndex="1" Name="PlainFilePathTextBox" MouseDoubleClick="PlainFilePathTextBox_MouseDoubleClick"></TextBox>
 
         <TextBlock Grid.Row="1" Grid.Column="0">Output Folder</TextBlock>
         <TextBox Grid.Row="1" Grid.Column="1" TabIndex="2" IsTabStop="True" Name="CipherFilePathTextBox" MouseDoubleClick="CipherFilePathTextBox_MouseDoubleClick"></TextBox>
@@ -42,20 +42,20 @@
             <TextBlock>AES</TextBlock>
         </StackPanel>
 
-        <TextBlock Grid.Row="3" Grid.Column="0">Key File</TextBlock>
-        <TextBox Grid.Row="3" Grid.Column="1" TabIndex="5" IsTabStop="True" MouseDoubleClick="KeyFilePathTextBox_MouseDoubleClick" Name="KeyFilePathTextBox"></TextBox>
-
-        <Button Grid.Row="4" Grid.Column="1" Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource EncryptCommand}}" IsTabStop="True" TabIndex="6">Encrypt</Button>
+        <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
+            <Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>
+            <Button Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource StartCommand}}" IsTabStop="True" TabIndex="6">Start</Button>
+        </StackPanel>
 
         <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">Message</TextBlock>
         <TextBox Grid.Row="5" Grid.Column="1" Name="OutputTextBox" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TabIndex="7" />
 
-        <ctrl:StatusBar Grid.Row="6" Grid.Column="0" x:Name="StatusBar" />
+        <ctrl:StatusBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusBar" />
     </Grid>
     <UserControl.CommandBindings>
         <CommandBinding
-            Command="{StaticResource EncryptCommand}"
-            CanExecute="EncryptCommand_CanExecute"
-            Executed="EncryptCommand_Executed"/>
+            Command="{StaticResource StartCommand}"
+            CanExecute="StartCommand_CanExecute"
+            Executed="StartCommand_Executed"/>
     </UserControl.CommandBindings>
 </UserControl>

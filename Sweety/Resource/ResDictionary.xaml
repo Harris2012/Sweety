@@ -19,7 +19,7 @@
     <Style TargetType="Button">
         <Setter Property="Margin" Value="5" />
     </Style>
-    <i:RoutedCommand x:Key="EncryptCommand" />
+    <i:RoutedCommand x:Key="StartCommand" />
     <i:RoutedCommand x:Key="DecryptCommand" />
     <i:RoutedCommand x:Key="GenerateCommand" />
     <i:RoutedCommand x:Key="ValidationCommand" />
