@@ -39,50 +39,114 @@ namespace Sweety
             return coreApp;
         }
 
-
-        public static List<ExcelTable> ReadFromExcel(string excelFilePath)
+        public static List<T> ReadFromExcel<T>(string excelFilePath) where T : class, new()
         {
-            List<ExcelTable> returnValue = new List<ExcelTable>();
+            List<T> entityList = new List<T>();
+
+            var type = typeof(T);
+            ExcelTableAttribute tableAttribute = (ExcelTableAttribute)type.GetCustomAttributes(typeof(ExcelTableAttribute), false)[0];
+            var tableName = tableAttribute.Name;
+            var properties = type.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
+
+            if (string.IsNullOrEmpty(tableName) || properties.Length == 0)
+            {
+                return entityList;
+            }
 
             Excel.Application app = GetApplication();
-
             Excel.Workbook book = app.Workbooks.Open(excelFilePath);
-
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
                 Excel.Worksheet sheet = book.Sheets[sheetIndex];
-
-                ExcelTable table = new ExcelTable();
-                table.Name = sheet.Name;
-
-                int maxColumn = 0;
-                int maxRow = 0;
-                for (int row = 1; ; row++)
+                if (sheet.Name.Equals(tableName))
                 {
-                    Excel.Range range = sheet.Cells[row, 1];
-                    if (string.IsNullOrEmpty(range.Text))
-                    {
-                        break;
-                    }
-                    maxRow = row;
-                }
-                for (int column = 1; ; column++)
-                {
-                    Excel.Range range = sheet.Cells[1, column];
-                    if (string.IsNullOrEmpty(range.Text))
-                    {
-                        break;
-                    }
-                    maxColumn = column;
-                }
+                    var maxRow = GetMaxRow(sheet);
+                    var maxColumn = GetMaxColumn(sheet);
 
-                table.MaxRow = maxRow;
-                table.MaxColumn = maxColumn;
+                    Excel.Range range = sheet.Range[ToColumnLabel(1) + 1, ToColumnLabel(maxColumn) + maxRow];
 
-                returnValue.Add(table);
+                    for (int row = 1; row <= maxRow; row++)
+                    {
+                        T entity = new T();
+                        foreach (var property in type.GetProperties())
+                        {
+                            ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+
+                            Excel.Range cellRange = range[row, columnAttribute.ColumnIndex];
+
+                            string cellText = cellRange.Text;
+
+                            switch (property.PropertyType.ToString())
+                            {
+                                case "System.Int32":
+                                    {
+                                        int intValue = 0;
+                                        if (int.TryParse(cellRange.Text, out intValue))
+                                        {
+                                            property.SetValue(entity, intValue, null);
+                                        }
+                                    }
+                                    break;
+                                case "System.Int64":
+                                    {
+                                        long longValue = 0;
+                                        if (long.TryParse(cellRange.Text, out longValue))
+                                        {
+                                            property.SetValue(entity, longValue, null);
+                                        }
+                                    }
+                                    break;
+                                case "System.String":
+                                    {
+                                        property.SetValue(entity, cellRange.Text, null);
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        entityList.Add(entity);
+                    }
+                    break;
+                }
             }
 
-            return returnValue;
+            return entityList;
+        }
+
+        private static int GetMaxRow(Excel.Worksheet sheet)
+        {
+            int maxRow = 0;
+
+            for (int row = 1; ; row++)
+            {
+                Excel.Range range = sheet.Cells[row, 1];
+                if (string.IsNullOrEmpty(range.Text))
+                {
+                    break;
+                }
+                maxRow = row;
+            }
+
+            return maxRow;
+        }
+
+        private static int GetMaxColumn(Excel.Worksheet sheet)
+        {
+            int maxColumn = 0;
+
+            for (int column = 1; ; column++)
+            {
+                Excel.Range range = sheet.Cells[1, column];
+                if (string.IsNullOrEmpty(range.Text))
+                {
+                    break;
+                }
+                maxColumn = column;
+            }
+
+            return maxColumn;
         }
 
         private static string ToColumnLabel(int column)
@@ -104,7 +168,7 @@ namespace Sweety
             return string.Join(string.Empty, list);
         }
 
-        public static void WriteToExcel(string excelFilePath, Dictionary<string, List<ExcelTable>> entityList)
+        public static void WriteToExcel(string excelFilePath, List<ProductEntity> entityList)
         {
             foreach (var entity in entityList)
             {

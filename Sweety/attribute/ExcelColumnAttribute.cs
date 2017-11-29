@@ -8,11 +8,14 @@ namespace Sweety
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     class ExcelColumnAttribute : Attribute
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public ExcelColumnAttribute(string name)
+        public int ColumnIndex { get; private set; }
+
+        public ExcelColumnAttribute(string name, int columnIndex)
         {
             this.Name = name;
+            this.ColumnIndex = columnIndex;
         }
     }
 }

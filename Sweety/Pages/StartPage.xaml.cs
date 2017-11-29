@@ -130,25 +130,22 @@ namespace Sweety.Pages
         /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            List<ProductEntity> productEntityList = new List<ProductEntity>();
+
+            var names = new List<string> { "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝", "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓" };
+            for (int i = 0; i < names.Count; i++)
             {
-                List<ProductEntity> productEntityList = new List<ProductEntity>();
+                var productEntity = new ProductEntity();
 
-                var names = new List<string> { "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝", "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓" };
-                for (int i = 0; i < names.Count; i++)
-                {
-                    var productEntity = new ProductEntity();
+                productEntity.ProductNo = string.Format("P{0:D5}", i + 1);
+                productEntity.Name = names[i];
 
-                    productEntity.ProductNo = string.Format("P{0:D5}", i + 1);
-                    productEntity.Name = names[i];
-
-                    productEntityList.Add(productEntity);
-                }
+                productEntityList.Add(productEntity);
             }
 
-            var dt = ExcelHelper.ReadFromExcel(@"F:\sample.xlsx");
+            var xx = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
 
-
-            var x = 0;
+            ExcelHelper.WriteToExcel(@"F:\sample.xlsx", productEntityList);
         }
     }
 }
