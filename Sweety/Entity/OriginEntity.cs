@@ -8,21 +8,27 @@ namespace Sweety.Entity
     /// <summary>
     /// 原始数据表
     /// </summary>
-    public class Origin
+    public class OriginEntity
     {
         /// <summary>
         /// 交易号
         /// </summary>
+        [ExcelColumn("交易号")]
         public string BusinessNo { get; set; }
 
         /// <summary>
         /// 单据号
         /// </summary>
+        [ExcelColumn("单据号")]
         public string PaperNo { get; set; }
 
-        /// <summary>
-        /// 模式
-        /// </summary>
-        public string Mode { get; set; }
+        [ExcelColumn("产品编号")]
+        public string ProductNo { get; set; }
+
+        [ExcelColumn("采购数")]
+        public int BuyCount { get; set; }
+
+        [ExcelColumn("销售数")]
+        public int SellCount { get; set; }
     }
 }

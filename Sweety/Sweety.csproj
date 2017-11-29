@@ -73,13 +73,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="attribute\ExcelColumnAttribute.cs" />
+    <Compile Include="attribute\ExcelTableAttribute.cs" />
     <Compile Include="Controls\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Entity\Origin.cs" />
+    <Compile Include="Entity\OriginEntity.cs" />
+    <Compile Include="Entity\ProductEntity.cs" />
+    <Compile Include="Entity\TargetEntity.cs" />
     <Compile Include="Model\BusinessMode.cs" />
     <Compile Include="Model\Paper.cs" />
     <Compile Include="Model\Business.cs" />
+    <Compile Include="Model\Product.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />
