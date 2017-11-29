@@ -9,6 +9,10 @@ namespace Sweety
     {
         public string Name { get; set; }
 
+        public int MaxRow { get; set; }
+
+        public int MaxColumn { get; set; }
+
         public object[,] cells { get; set; }
     }
 }

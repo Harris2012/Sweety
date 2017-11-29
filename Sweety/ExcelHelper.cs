@@ -55,10 +55,53 @@ namespace Sweety
                 ExcelTable table = new ExcelTable();
                 table.Name = sheet.Name;
 
+                int maxColumn = 0;
+                int maxRow = 0;
+                for (int row = 1; ; row++)
+                {
+                    Excel.Range range = sheet.Cells[row, 1];
+                    if (string.IsNullOrEmpty(range.Text))
+                    {
+                        break;
+                    }
+                    maxRow = row;
+                }
+                for (int column = 1; ; column++)
+                {
+                    Excel.Range range = sheet.Cells[1, column];
+                    if (string.IsNullOrEmpty(range.Text))
+                    {
+                        break;
+                    }
+                    maxColumn = column;
+                }
+
+                table.MaxRow = maxRow;
+                table.MaxColumn = maxColumn;
+
                 returnValue.Add(table);
             }
 
             return returnValue;
+        }
+
+        private static string ToColumnLabel(int column)
+        {
+            List<char> list = new List<char>();
+            while (column > 0)
+            {
+                var value = column % 26;
+
+                if (value > 0)
+                {
+                    char ch = (char)(value + 64);
+
+                    list.Insert(0, ch);
+                }
+                column = column / 26;
+            }
+
+            return string.Join(string.Empty, list);
         }
 
         public static void WriteToExcel(string excelFilePath, Dictionary<string, List<ExcelTable>> entityList)
