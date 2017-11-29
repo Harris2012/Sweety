@@ -9,7 +9,7 @@ namespace Sweety.Entity
     /// 产品
     /// </summary>
     [ExcelTable("产品")]
-    public class ProductEntity
+    class ProductEntity : EntityBase
     {
         [ExcelColumn("产品编号")]
         public string ProductNo { get; set; }

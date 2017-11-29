@@ -8,7 +8,7 @@ namespace Sweety.Entity
     /// <summary>
     /// 原始数据表
     /// </summary>
-    public class OriginEntity
+    class OriginEntity : EntityBase
     {
         /// <summary>
         /// 交易号
