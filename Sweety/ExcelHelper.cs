@@ -1,5 +1,6 @@
 ﻿using Sweety.Entity;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,12 @@ namespace Sweety
     {
         private static Excel.Application coreApp;
         private static readonly object lockObject = new object();
+
+        /// <summary>
+        /// Key: ExcelFilePath
+        /// Value: Excel.WorkBook
+        /// </summary>
+        private static readonly ConcurrentDictionary<string, Excel.Workbook> bookMap = new ConcurrentDictionary<string, Excel.Workbook>();
 
         public static void Stop()
         {
@@ -39,6 +46,23 @@ namespace Sweety
             return coreApp;
         }
 
+        private static Excel.Workbook GetWorkBook(Excel.Application app, string excelFilePath)
+        {
+            return bookMap.GetOrAdd(excelFilePath, v =>
+            {
+                return app.Workbooks.Open(excelFilePath);
+            });
+        }
+
+        private static void CloseWorkBook(string excelFilePath)
+        {
+            Excel.Workbook book;
+            if (bookMap.TryRemove(excelFilePath, out book))
+            {
+                book.Close();
+            }
+        }
+
         public static List<T> ReadFromExcel<T>(string excelFilePath) where T : class, new()
         {
             List<T> entityList = new List<T>();
@@ -54,7 +78,7 @@ namespace Sweety
             }
 
             Excel.Application app = GetApplication();
-            Excel.Workbook book = app.Workbooks.Open(excelFilePath);
+            Excel.Workbook book = GetWorkBook(app, excelFilePath);
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
                 Excel.Worksheet sheet = book.Sheets[sheetIndex];
@@ -111,6 +135,8 @@ namespace Sweety
                     break;
                 }
             }
+
+            CloseWorkBook(excelFilePath);
 
             return entityList;
         }
