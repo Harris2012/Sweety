@@ -62,6 +62,8 @@ namespace Sweety.Pages
                         List<TargetEntity> targetEntityList = Process(originEntityList);
 
                         ExcelHelper.WriteToExcel(outputFilePath, targetEntityList);
+
+                        message = "Success。";
                     }
                     catch (Exception ex)
                     {

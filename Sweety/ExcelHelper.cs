@@ -14,8 +14,6 @@ namespace Sweety
         {
             Excel.Application coreApp = new Excel.Application();
             coreApp.Visible = false;
-            coreApp.DisplayAlerts = false;
-            coreApp.ScreenUpdating = false;
 
             return coreApp;
         }
