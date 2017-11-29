@@ -46,23 +46,6 @@ namespace Sweety
             return coreApp;
         }
 
-        //private static Excel.Workbook GetWorkBook(Excel.Application app, string excelFilePath)
-        //{
-        //    return bookMap.GetOrAdd(excelFilePath, v =>
-        //    {
-        //        return ;
-        //    });
-        //}
-
-        //public static void CloseWorkBook(string excelFilePath)
-        //{
-        //    Excel.Workbook book;
-        //    if (bookMap.TryRemove(excelFilePath, out book))
-        //    {
-        //        book.Close();
-        //    }
-        //}
-
         public static List<T> ReadFromExcel<T>(string excelFilePath) where T : class, new()
         {
             List<T> entityList = new List<T>();

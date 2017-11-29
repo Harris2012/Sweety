@@ -164,7 +164,7 @@ namespace Sweety.Pages
                 for (int paperIndex = 0; paperIndex < paperCount; paperIndex++)
                 {
                     Paper paper = new Paper();
-                    paper.PaperNo = string.Format("PN{0:D6}", businessCount * 98 + paperIndex);
+                    paper.PaperNo = string.Format("PN{0:D6}", businessIndex * 98 + paperIndex);
                     business.PaperList.Add(paper);
 
                     //每张单据里面放一个产品
