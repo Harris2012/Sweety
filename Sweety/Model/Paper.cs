@@ -16,11 +16,6 @@ namespace Sweety.Model
         public string PaperNo { get; set; }
 
         /// <summary>
-        /// 产品编号
-        /// </summary>
-        public string ProductNo { get; set; }
-
-        /// <summary>
         /// 采购数
         /// </summary>
         public int BuyCount { get; set; }

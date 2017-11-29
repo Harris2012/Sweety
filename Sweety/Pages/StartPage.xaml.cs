@@ -157,6 +157,9 @@ namespace Sweety.Pages
                 Business business = new Business();
                 business.BusinessNo = string.Format("BN{0:D6}", businessIndex + 1);
 
+                //每张单据里面放一个产品
+                business.ProductNo = productEntityList[random.Next(productEntityList.Count)].ProductNo;
+
                 //每个交易号随机拆成1到3个单据号
                 int paperCount = random.Next(1, 4);
 
@@ -166,9 +169,6 @@ namespace Sweety.Pages
                     Paper paper = new Paper();
                     paper.PaperNo = string.Format("PN{0:D6}", businessIndex * 98 + paperIndex);
                     business.PaperList.Add(paper);
-
-                    //每张单据里面放一个产品
-                    paper.ProductNo = productEntityList[random.Next(productEntityList.Count)].ProductNo;
 
                     if (paperCount == 1)
                     {
@@ -240,7 +240,7 @@ namespace Sweety.Pages
 
                     originEntity.BusinessNo = business.BusinessNo;
                     originEntity.PaperNo = paper.PaperNo;
-                    originEntity.ProductNo = paper.ProductNo;
+                    originEntity.ProductNo = business.ProductNo;
                     originEntity.BuyCount = paper.BuyCount;
                     originEntity.SellCount = paper.SellCount;
 

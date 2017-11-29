@@ -15,6 +15,11 @@ namespace Sweety.Model
         /// </summary>
         public string BusinessNo { get; set; }
 
+        /// <summary>
+        /// 产品编号
+        /// </summary>
+        public string ProductNo { get; set; }
+
         public List<Paper> PaperList { get; set; }
     }
 }
