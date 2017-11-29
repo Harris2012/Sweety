@@ -36,9 +36,9 @@ namespace Sweety
                     if (coreApp == null)
                     {
                         coreApp = new Excel.Application();
-                        coreApp.Visible = true;
+                        coreApp.Visible = false;
                         coreApp.DisplayAlerts = false;
-                        //coreApp.ScreenUpdating = false;
+                        coreApp.ScreenUpdating = false;
                     }
                 }
             }
@@ -160,15 +160,7 @@ namespace Sweety
             }
 
             Excel.Application app = GetApplication();
-            Excel.Workbook book = null;
-            if (System.IO.File.Exists(excelFilePath))
-            {
-                book = app.Workbooks.Open(excelFilePath);
-            }
-            else
-            {
-                book = app.Workbooks.Add();
-            }
+            Excel.Workbook book = app.Workbooks.Add();
 
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
@@ -205,7 +197,8 @@ namespace Sweety
                     valueCellRange.Value = property.GetValue(entityList[row], null);
                 }
             }
-            book.Close(true, excelFilePath);
+            book.SaveAs(excelFilePath);
+            book.Close();
         }
 
         private static int GetMaxRow(Excel.Worksheet sheet)

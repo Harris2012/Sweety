@@ -14,5 +14,20 @@ namespace Sweety.Model
         /// 单据号
         /// </summary>
         public string PaperNo { get; set; }
+
+        /// <summary>
+        /// 产品编号
+        /// </summary>
+        public string ProductNo { get; set; }
+
+        /// <summary>
+        /// 采购数
+        /// </summary>
+        public int BuyCount { get; set; }
+
+        /// <summary>
+        /// 销售数
+        /// </summary>
+        public int SellCount { get; set; }
     }
 }
