@@ -5,10 +5,7 @@ using System.Text;
 
 namespace Sweety.Entity
 {
-    /// <summary>
-    /// 产品
-    /// </summary>
-    [ExcelTable("产品")]
+    [ExcelTable("产品表")]
     class ProductEntity
     {
         [ExcelColumn("产品编号")]
