@@ -26,10 +26,10 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Grid.Row="0" Grid.Column="0">Input File</TextBlock>
-        <TextBox Grid.Row="0" Grid.Column="1" IsTabStop="True" TabIndex="1" Name="PlainFilePathTextBox" MouseDoubleClick="PlainFilePathTextBox_MouseDoubleClick"></TextBox>
+        <TextBox Grid.Row="0" Grid.Column="1" IsTabStop="True" TabIndex="1" Name="InputFilePathTextBox" MouseDoubleClick="InputFilePathTextBox_MouseDoubleClick"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">Output Folder</TextBlock>
-        <TextBox Grid.Row="1" Grid.Column="1" TabIndex="2" IsTabStop="True" Name="CipherFilePathTextBox" MouseDoubleClick="CipherFilePathTextBox_MouseDoubleClick"></TextBox>
+        <TextBlock Grid.Row="1" Grid.Column="0">Output File</TextBlock>
+        <TextBox Grid.Row="1" Grid.Column="1" TabIndex="2" IsTabStop="True" Name="OutputFilePathTextBox" MouseDoubleClick="OutputFilePathTextBox_MouseDoubleClick"></TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0">Mode</TextBlock>
         <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
@@ -43,7 +43,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-            <Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>
+            <!--<Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>-->
             <Button Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource StartCommand}}" IsTabStop="True" TabIndex="6">Start</Button>
         </StackPanel>
 

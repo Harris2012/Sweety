@@ -32,7 +32,7 @@ namespace Sweety.Pages
 
         private void StartCommand_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = !string.IsNullOrEmpty(PlainFilePathTextBox.Text) && !string.IsNullOrEmpty(CipherFilePathTextBox.Text);
+            e.CanExecute = !string.IsNullOrEmpty(InputFilePathTextBox.Text) && !string.IsNullOrEmpty(OutputFilePathTextBox.Text);
         }
 
         private void StartCommand_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -41,8 +41,8 @@ namespace Sweety.Pages
             {
                 AppendMessage("=================");
 
-                string plainFilePath = PlainFilePathTextBox.Text;
-                string cipherFilePath = CipherFilePathTextBox.Text;
+                string plainFilePath = InputFilePathTextBox.Text;
+                string cipherFilePath = OutputFilePathTextBox.Text;
                 ValueType valueType = ValueType.RSA;
                 if (AESRadioButton.IsChecked.HasValue && AESRadioButton.IsChecked.Value)
                 {
@@ -95,32 +95,29 @@ namespace Sweety.Pages
             }
         }
 
-        /// <summary>
-        /// 打开明文文件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void PlainFilePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void InputFilePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
 
+            dialog.Filter = "Excel文件|*.xlsx";
+
             bool? result = dialog.ShowDialog();
             if (result != null && result.Value)
             {
-                PlainFilePathTextBox.Text = dialog.FileName;
+                InputFilePathTextBox.Text = dialog.FileName;
             }
         }
 
-        private void CipherFilePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void OutputFilePathTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             SaveFileDialog dialog = new SaveFileDialog();
 
-            dialog.Filter = "KS文件|*.ks";
+            dialog.Filter = "Excel文件|*.xlsx";
 
             bool? result = dialog.ShowDialog();
             if (result != null && result.Value)
             {
-                CipherFilePathTextBox.Text = dialog.FileName;
+                OutputFilePathTextBox.Text = dialog.FileName;
             }
         }
 
