@@ -120,64 +120,31 @@ namespace Sweety.Pages
                 var processResult = ProcessMonth(month.Value);
 
                 //本月有结余的产品
-                var remains = processResult.Where(v => v.Remain > 0).ToList();
-                if (remains.Count > 0)
+                var remainEntitys = processResult.Where(v => v.Remain > 0).ToList();
+                if (remainEntitys.Count > 0)
                 {
-                    foreach (var remain in remains)
+                    var remainGroups = ToGroup(remainEntitys);
+                    foreach (var remainGroup in remainGroups)
                     {
-                        var historys = requireHistory.Where(v => v.BusinessNo == remain.BusinessNo && v.ProductNo == remain.ProductNo).ToList();
-                        if (historys.Count > 0)
-                        {
-                            for (int i = 0; i < historys.Count; i++)
-                            {
-                                int count = Math.Min(remain.Remain, historys[i].Require);
-                                historys[i].Require -= count;
-                                remain.Remain -= count;
-                                historys[i].RelatedPapers.Add(remain.PaperNo);
-                                remain.RelatedPapers.Add(historys[i].PaperNo);
-                                historys[i].Remarks.Add(string.Format("[=>{1}:{2}]", historys[i].PaperNo, count));
-                                remain.Remarks.Add(string.Format("[=>{1}:{2}]", historys[i].PaperNo, count));
-
-                                if (remain.Remain <= 0)
-                                {
-                                    break;
-                                }
-                            }
-                        }
+                        ProcessRemain(remainGroup, requireHistory);
                     }
 
-                    remains = remains.Where(v => v.Remain > 0).ToList();
-                    remainHistory.AddRange(remains);
+                    remainEntitys = remainEntitys.Where(v => v.Remain > 0).ToList();
+                    remainHistory.AddRange(remainEntitys);
                 }
 
                 //本月不足的产品
-                var requires = processResult.Where(v => v.Require > 0).ToList();
-                if (requires.Count > 0)
+                var requireEntitys = processResult.Where(v => v.Require > 0).ToList();
+                if (requireEntitys.Count > 0)
                 {
-                    foreach (var require in requires)
+                    var requireGroups = ToGroup(requireEntitys);
+                    foreach (var requireGroup in requireGroups)
                     {
-                        var historys = remainHistory.Where(v => v.BusinessNo == require.BusinessNo && v.ProductNo == require.ProductNo).ToList();
-                        if (historys.Count > 0)
-                        {
-                            for (int i = 0; i < historys.Count; i++)
-                            {
-                                int count = Math.Min(require.Require, historys[i].Remain);
-                                historys[i].Remain -= count;
-                                require.Require -= count;
-                                historys[i].RelatedPapers.Add(require.PaperNo);
-                                require.RelatedPapers.Add(historys[i].PaperNo);
-                                historys[i].Remarks.Add(string.Format("[{0}=>:{1}]", historys[i].PaperNo, count));
-                                require.Remarks.Add(string.Format("[{0}=>:{1}]", historys[i].PaperNo, require.PaperNo, count));
-                            }
-                            if (require.Require <= 0)
-                            {
-                                break;
-                            }
-                        }
+                        ProcessRequire(requireGroup, remainHistory);
                     }
 
-                    requires = processResult.Where(v => v.Require > 0).ToList();
-                    requireHistory.AddRange(requires);
+                    requireEntitys = requireEntitys.Where(v => v.Require > 0).ToList();
+                    requireHistory.AddRange(requireEntitys);
                 }
 
                 remainHistory.RemoveAll(v => v.Remain == 0);
@@ -187,6 +154,125 @@ namespace Sweety.Pages
             }
 
             return returnValue;
+        }
+
+        private static void ProcessRemain(TargetEntityGroup remainGroup, List<TargetEntity> requireHistory)
+        {
+            var historyEntitys = requireHistory.Where(v => v.BusinessNo == remainGroup.BusinessNo && v.ProductNo == remainGroup.ProductNo).ToList();
+            if (historyEntitys.Count == 0)
+            {
+                return;
+            }
+
+            List<string> remainPaperNos = remainGroup.EntityList.Select(v => "[" + v.PaperNo + "]").ToList();
+
+            var requireGroups = ToGroup(historyEntitys);
+            foreach (var requireGroup in requireGroups)
+            {
+                List<string> requirePaperNos = requireGroup.EntityList.Select(v => "(" + v.PaperNo + ")").ToList();
+
+                int count = Math.Min(remainGroup.Remain, requireGroup.Require);
+                remainGroup.Remain -= count;
+                requireGroup.Require -= count;
+
+                //处理子单
+                foreach (var remainEntity in remainGroup.EntityList)
+                {
+                    remainEntity.Require -= count;
+                    remainEntity.RelatedPapers.AddRange(requirePaperNos);
+                }
+
+                foreach (var requireEntity in requireGroup.EntityList)
+                {
+                    requireEntity.RelatedPapers.AddRange(remainPaperNos);
+                }
+
+                if (remainGroup.Remain <= 0)
+                {
+                    break;
+                }
+            }
+        }
+
+        private static void ProcessRequire(TargetEntityGroup requireGroup, List<TargetEntity> remainHistory)
+        {
+            var historyEntitys = remainHistory.Where(v => v.BusinessNo == requireGroup.BusinessNo && v.ProductNo == requireGroup.ProductNo).ToList();
+            if (historyEntitys.Count == 0)
+            {
+                return;
+            }
+
+            List<string> requirePaperNos = requireGroup.EntityList.Select(v => "(" + v.PaperNo + ")").ToList();
+
+            var requireGroups = ToGroup(historyEntitys);
+            foreach (var remainGroup in requireGroups)
+            {
+                List<string> remainPaperNos = remainGroup.EntityList.Select(v => "[" + v.PaperNo + "]").ToList();
+
+                int count = Math.Min(requireGroup.Require, remainGroup.Remain);
+                requireGroup.Remain -= count;
+                remainGroup.Require -= count;
+
+                //处理子单
+                foreach (var requireEntity in requireGroup.EntityList)
+                {
+                    requireEntity.Require -= count;
+                    requireEntity.RelatedPapers.AddRange(remainPaperNos);
+                }
+
+                foreach (var remainEntity in remainGroup.EntityList)
+                {
+                    remainEntity.RelatedPapers.AddRange(requirePaperNos);
+                }
+
+                if (requireGroup.Require <= 0)
+                {
+                    break;
+                }
+            }
+        }
+
+        private static List<TargetEntityGroup> ToGroup(List<TargetEntity> entityList)
+        {
+            List<TargetEntityGroup> returnValue = new List<TargetEntityGroup>();
+
+            foreach (var entity in entityList)
+            {
+                var group = returnValue.FirstOrDefault(v => v.BusinessNo == entity.BusinessNo && v.ProductNo == entity.ProductNo && v.Month == entity.Month);
+                if (group == null)
+                {
+                    group = new TargetEntityGroup();
+
+                    group.BusinessNo = entity.BusinessNo;
+                    group.ProductNo = entity.ProductNo;
+                    group.Month = entity.Month;
+                    group.Remain = entity.Remain;
+                    group.Require = entity.Require;
+                    group.EntityList = new List<TargetEntity>();
+
+                    returnValue.Add(group);
+                }
+
+                group.EntityList.Add(entity);
+
+            }
+
+            return returnValue;
+        }
+
+        class TargetEntityGroup
+        {
+            public string BusinessNo { get; set; }
+
+            public string ProductNo { get; set; }
+
+            public int Month { get; set; }
+
+            public int Remain { get; set; }
+
+            public int Require { get; set; }
+
+            public List<TargetEntity> EntityList { get; set; }
         }
 
         /// <summary>
@@ -313,6 +399,7 @@ namespace Sweety.Pages
             targetEntity.BusinessNo = sourceModel.BusinessNo;
             targetEntity.PaperNo = sourceModel.PaperNo;
             targetEntity.ProductNo = sourceModel.ProductNo;
+            targetEntity.Month = sourceModel.Month;
             if (sourceModel.Mode == 1)
             {
                 targetEntity.BuyCount = sourceModel.Count;

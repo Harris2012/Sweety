@@ -73,6 +73,8 @@ namespace Sweety.Entity
             }
         }
 
+        public int Month { get; set; }
+
         /// <summary>
         /// 关联单据号
         /// </summary>
