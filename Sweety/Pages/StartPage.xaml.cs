@@ -139,7 +139,6 @@ namespace Sweety.Pages
                     targetEntity.TotalBuyTime = totalBuyTime;
                     targetEntity.TotalSellCount = totalSellCount;
                     targetEntity.TotalSellTime = totalSellTime;
-                    targetEntity.SaleMode = "直运";
                     groupReturnValue.Add(targetEntity);
                 }
 
@@ -147,6 +146,7 @@ namespace Sweety.Pages
                 {
                     foreach (var targetEntity in groupReturnValue)
                     {
+                        targetEntity.SaleMode = "直运";
                         targetEntity.TotalRemain = 0;
                         targetEntity.TotalRequire = 0;
                     }
@@ -156,6 +156,7 @@ namespace Sweety.Pages
                     int value = totalBuyCount - totalSellCount;
                     foreach (var targetEntity in groupReturnValue)
                     {
+                        targetEntity.SaleMode = "没卖完";
                         targetEntity.TotalRemain = value;
                         targetEntity.TotalRequire = 0;
                     }
@@ -165,6 +166,7 @@ namespace Sweety.Pages
                     int value = totalSellCount - totalBuyCount;
                     foreach (var targetEntity in groupReturnValue)
                     {
+                        targetEntity.SaleMode = "不够卖";
                         targetEntity.TotalRemain = 0;
                         targetEntity.TotalRequire = value;
                     }
@@ -190,7 +192,7 @@ namespace Sweety.Pages
                 model.Count = entity.Count;
                 model.CreateTime = entity.CreateTime;
                 model.Mode = "采购".Equals(entity.Mode) ? 1 : 2;
-                model.Month = entity.CreateTime.Year * 100 + entity.CreateTime.Day;
+                model.Month = entity.CreateTime.Year * 100 + entity.CreateTime.Month;
 
                 returnValue.Add(model);
             }

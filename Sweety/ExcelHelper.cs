@@ -80,6 +80,15 @@ namespace Sweety
                                         property.SetValue(entity, cellRange.Text, null);
                                     }
                                     break;
+                                case "System.DateTime":
+                                    {
+                                        DateTime timeValue = DateTime.MinValue;
+                                        if (DateTime.TryParse(cellRange.Text, out timeValue))
+                                        {
+                                            property.SetValue(entity, timeValue, null);
+                                        }
+                                    }
+                                    break;
                                 default:
                                     break;
                             }

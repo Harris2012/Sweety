@@ -23,33 +23,48 @@ namespace Sweety.Entity
         [ExcelColumn("销售数", 5)]
         public int SellCount { get; set; }
 
+        [ExcelColumn("总进货数", 6)]
+        public int TotalBuyCount { get; set; }
+
+        [ExcelColumn("总进货次数", 7)]
+        public int TotalBuyTime { get; set; }
+
+        [ExcelColumn("总销货次数", 8)]
+        public int TotalSellTime { get; set; }
+
+        [ExcelColumn("总销货数", 9)]
+        public int TotalSellCount { get; set; }
+
+        [ExcelColumn("总剩余库存", 10)]
+        public int TotalRemain { get; set; }
+
+        [ExcelColumn("总不足库存", 11)]
+        public int TotalRequire { get; set; }
+
         /// <summary>
         /// 直运
         /// 暂估
         /// 结算前期库存
         /// </summary>
-        [ExcelColumn("销售模式", 6)]
+        [ExcelColumn("销售模式", 12)]
         public string SaleMode { get; set; }
 
-        [ExcelColumn("备注", 7)]
+        [ExcelColumn("备注", 13)]
         public string Remark { get; set; }
 
-        [ExcelColumn("本月总进货数(同一交易号)", 8)]
-        public int TotalBuyCount { get; set; }
+        [ExcelColumn("关联单据号", 14)]
+        public string RelatedPaper { get; set; }
 
-        [ExcelColumn("本月总进货次数(同一交易号)", 9)]
-        public int TotalBuyTime { get; set; }
+        /// <summary>
+        /// 关联单据号
+        /// </summary>
+        private List<string> relatedPapers = new List<string>();
 
-        [ExcelColumn("本月总销货数(同一交易号)", 10)]
-        public int TotalSellCount { get; set; }
+        public void AddRelatedPaper(string paperNo)
+        {
+            this.relatedPapers.Add(paperNo);
 
-        [ExcelColumn("本月总销货次数(同一交易号)", 11)]
-        public int TotalSellTime { get; set; }
-
-        [ExcelColumn("本月总剩余库存(同一交易号)", 12)]
-        public int TotalRemain { get; set; }
-
-        [ExcelColumn("本月总不足库存(同一交易号)", 13)]
-        public int TotalRequire { get; set; }
+            this.RelatedPaper = string.Join(",", relatedPapers);
+        }
     }
 }
