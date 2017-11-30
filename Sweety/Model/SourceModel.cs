@@ -21,7 +21,7 @@ namespace Sweety.Model
 
         public int Count { get; set; }
 
-        public DateTime CreateTime { get; set; }
+        public int CreateTime { get; set; }
 
         /// <summary>
         /// 月份

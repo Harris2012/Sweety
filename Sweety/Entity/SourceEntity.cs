@@ -27,6 +27,6 @@ namespace Sweety.Entity
         public int Count { get; set; }
 
         [ExcelColumn("日期", 6)]
-        public DateTime CreateTime { get; set; }
+        public int CreateTime { get; set; }
     }
 }

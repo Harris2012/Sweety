@@ -58,27 +58,27 @@ namespace Sweety.Pages
 
                     try
                     {
-                        AppendMessage("开始读取excel文件.");
+                        AppendTheMessage("开始读取excel文件.");
                         Stopwatch watch = Stopwatch.StartNew();
                         List<SourceEntity> sourceEntityList = ExcelHelper.ReadFromExcel<SourceEntity>(inputFilePath);
                         watch.Stop();
-                        AppendMessage("读取Excel文件完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
+                        AppendTheMessage("读取Excel文件完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
 
-                        AppendMessage("开始处理数据");
+                        AppendTheMessage("开始处理数据");
                         watch.Restart();
                         Dictionary<int, List<TargetEntity>> targetDictionary = Process(sourceEntityList);
-                        AppendMessage("处理数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
+                        AppendTheMessage("处理数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
 
-                        AppendMessage("开始写入结果文件");
+                        AppendTheMessage("开始写入结果文件");
                         foreach (var target in targetDictionary)
                         {
-                            AppendMessage("正在写入" + target.Key + "的数据");
+                            AppendTheMessage("正在写入" + target.Key + "的数据");
                             watch.Restart();
                             ExcelHelper.WriteToExcel(outputFilePath, target.Key.ToString(), target.Value);
                             watch.Stop();
-                            AppendMessage("写入" + target.Key + "的数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
+                            AppendTheMessage("写入" + target.Key + "的数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
                         }
-                        AppendMessage("写入结果文件完成");
+                        AppendTheMessage("写入结果文件完成");
 
                         message = "Success";
                     }
@@ -99,7 +99,6 @@ namespace Sweety.Pages
             catch (Exception ex)
             {
                 AppendMessage(ex.ToString());
-
             }
         }
 
@@ -206,7 +205,7 @@ namespace Sweety.Pages
                 model.Count = entity.Count;
                 model.CreateTime = entity.CreateTime;
                 model.Mode = "采购".Equals(entity.Mode) ? 1 : 2;
-                model.Month = entity.CreateTime.Year * 100 + entity.CreateTime.Month;
+                model.Month = entity.CreateTime / 100;
 
                 returnValue.Add(model);
             }
@@ -214,6 +213,15 @@ namespace Sweety.Pages
             returnValue = returnValue.OrderBy(v => v.Month).ToList();
 
             return returnValue;
+        }
+
+        private static DateTime ToTime(int value)
+        {
+            return new DateTime(value / 10000, value % 10000 / 100, value % 100);
+        }
+        private static int ToInt(DateTime value)
+        {
+            return value.Year * 10000 + value.Month * 100 + value.Day;
         }
 
         private static TargetEntity ToTargetEntity(SourceModel sourceModel)
@@ -240,6 +248,13 @@ namespace Sweety.Pages
             OutputTextBox.AppendText(DateTime.Now.ToString("yyyyMMdd HH:mm:ss") + ": ");
             OutputTextBox.AppendText(message);
             OutputTextBox.AppendText(Environment.NewLine);
+        }
+        private void AppendTheMessage(string message)
+        {
+            this.Dispatcher.Invoke(new Action(() =>
+            {
+                AppendMessage(message);
+            }));
         }
 
         private void SetStatus(Status status, string message)
@@ -343,7 +358,7 @@ namespace Sweety.Pages
                     sourceEntity.Count = random.Next(100, 300);
 
                     //日期
-                    sourceEntity.CreateTime = day;
+                    sourceEntity.CreateTime = ToInt(day);
 
                     returnValue.Add(sourceEntity);
                 }
