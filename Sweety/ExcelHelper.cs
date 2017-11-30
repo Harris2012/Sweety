@@ -97,17 +97,22 @@ namespace Sweety
             return entityList;
         }
 
+        public static void WriteToExcel<T>(string excelFilePath, List<T> entityList)
+        {
+            WriteToExcel(excelFilePath, null, entityList);
+        }
+
         /// <summary>
         /// 将数据写入excel文件并关闭excel文件。如果已存在，则尝试追加表
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelFilePath"></param>
         /// <param name="entityList"></param>
-        public static void WriteToExcel<T>(string excelFilePath, List<T> entityList)
+        public static void WriteToExcel<T>(string excelFilePath, string sheetName, List<T> entityList)
         {
             var type = typeof(T);
             ExcelTableAttribute tableAttribute = (ExcelTableAttribute)type.GetCustomAttributes(typeof(ExcelTableAttribute), false)[0];
-            var tableName = tableAttribute.Name;
+            var tableName = sheetName != null ? sheetName : tableAttribute.Name;
             var properties = type.GetProperties(System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public);
 
             if (string.IsNullOrEmpty(tableName) || properties.Length == 0)

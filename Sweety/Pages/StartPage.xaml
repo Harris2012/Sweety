@@ -43,7 +43,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-            <Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>
+            <!--<Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>-->
             <Button Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource StartCommand}}" IsTabStop="True" TabIndex="6">Start</Button>
         </StackPanel>
 

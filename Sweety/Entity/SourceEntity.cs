@@ -6,7 +6,7 @@ using System.Text;
 namespace Sweety.Entity
 {
     [ExcelTable("基础数据表")]
-    public class SourceEnity
+    public class SourceEntity
     {
         [ExcelColumn("单据号", 1)]
         public string PaperNo { get; set; }

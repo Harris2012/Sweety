@@ -82,15 +82,14 @@
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Entity\BusinessEntity.cs" />
-    <Compile Include="Entity\OriginEntity.cs" />
     <Compile Include="Entity\ProductEntity.cs" />
-    <Compile Include="Entity\SourceEnity.cs" />
+    <Compile Include="Entity\SourceEntity.cs" />
     <Compile Include="Entity\TargetEntity.cs" />
     <Compile Include="ExcelHelper.cs" />
-    <Compile Include="Model\BusinessMode.cs" />
     <Compile Include="Model\Paper.cs" />
     <Compile Include="Model\Business.cs" />
     <Compile Include="Model\Product.cs" />
+    <Compile Include="Model\SourceModel.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />
     <Compile Include="ValueType.cs" />

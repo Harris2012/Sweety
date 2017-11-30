@@ -57,11 +57,14 @@ namespace Sweety.Pages
 
                     try
                     {
-                        List<OriginEntity> originEntityList = ExcelHelper.ReadFromExcel<OriginEntity>(inputFilePath);
+                        List<SourceEntity> sourceEntityList = ExcelHelper.ReadFromExcel<SourceEntity>(inputFilePath);
 
-                        List<TargetEntity> targetEntityList = Process(originEntityList);
+                        Dictionary<int, List<TargetEntity>> targetDictionary = Process(sourceEntityList);
 
-                        ExcelHelper.WriteToExcel(outputFilePath, targetEntityList);
+                        foreach (var target in targetDictionary)
+                        {
+                            ExcelHelper.WriteToExcel(outputFilePath, target.Key.ToString(), target.Value);
+                        }
 
                         message = "Success";
                     }
@@ -86,108 +89,132 @@ namespace Sweety.Pages
             }
         }
 
-        private List<TargetEntity> Process(List<OriginEntity> originEntityList)
+        private Dictionary<int, List<TargetEntity>> Process(List<SourceEntity> sourceEntityList)
         {
-            List<TargetEntity> returnValue = new List<TargetEntity>();
+            Dictionary<int, List<TargetEntity>> returnValue = new Dictionary<int, List<TargetEntity>>();
 
-            var groups = originEntityList.GroupBy(v => v.BusinessNo).ToList();
+            List<SourceModel> sourceModelList = ToModelList(sourceEntityList);
 
-            foreach (var group in groups)
+            List<SourceModel> history = new List<SourceModel>();
+
+            var months = sourceModelList.GroupBy(v => v.Month).ToDictionary(v => v.Key, v => v.ToList());
+            foreach (var month in months)
             {
-                StringBuilder remarkBuilder = new StringBuilder();
-                if (group.Count() == 1)
-                {
-                    OriginEntity originEntity = group.First();
-                    remarkBuilder.Append("仅此一单。");
+                var items = month.Value;
 
-                    TargetEntity targetEntity = ToTargetEntity(originEntity);
+                var processResult = ProcessMonth(month.Value, history);
 
-                    if (originEntity.SellCount == originEntity.BuyCount)
-                    {
-                        targetEntity.SaleMode = "直运";
-                        remarkBuilder.Append("进货数等于销货数。");
-                    }
-                    else if (originEntity.SellCount < originEntity.BuyCount)
-                    {
-                        targetEntity.SaleMode = "滞销";
-                        remarkBuilder.Append("进货数大于销货数。");
-                    }
-                    else
-                    {
-                        targetEntity.SaleMode = "超卖";
-                        remarkBuilder.Append("进货数小于销货数。");
-                    }
-
-                    targetEntity.Remark = remarkBuilder.ToString();
-
-                    returnValue.Add(targetEntity);
-                }
-                else
-                {
-                    remarkBuilder.Append("交易已被拆单。");
-
-                    int totalBuyCount = group.Sum(v => v.BuyCount);
-                    int totalSellCount = group.Sum(v => v.SellCount);
-
-                    string saleMode = string.Empty;
-
-                    if (totalSellCount == totalBuyCount)
-                    {
-                        saleMode = "整体直运";
-                        remarkBuilder.Append("整体进货数等于销货数。");
-                    }
-                    else if (totalSellCount < totalBuyCount)
-                    {
-                        saleMode = "整体滞销";
-                        remarkBuilder.Append("整体进货数大于销货数。");
-                    }
-                    else
-                    {
-                        saleMode = "整体超卖";
-                        remarkBuilder.Append("整体进货数小于销货数。");
-                    }
-
-                    foreach (var originEntity in group)
-                    {
-                        StringBuilder singleRemarkBuilder = new StringBuilder();
-
-                        TargetEntity targetEntity = ToTargetEntity(originEntity);
-
-                        if (originEntity.SellCount == originEntity.BuyCount)
-                        {
-                            targetEntity.SaleMode = saleMode;
-                            singleRemarkBuilder.Append("本单进货数等于销货数。");
-                        }
-                        else if (originEntity.SellCount < originEntity.BuyCount)
-                        {
-                            targetEntity.SaleMode = saleMode;
-                            singleRemarkBuilder.Append("进货数大于销货数。");
-                        }
-                        else
-                        {
-                            targetEntity.SaleMode = saleMode;
-                            singleRemarkBuilder.Append("进货数小于销货数。");
-                        }
-
-                        targetEntity.Remark = remarkBuilder.ToString() + singleRemarkBuilder.ToString();
-
-                        returnValue.Add(targetEntity);
-                    }
-                }
+                returnValue.Add(month.Key, processResult);
             }
 
             return returnValue;
         }
 
-        private static TargetEntity ToTargetEntity(OriginEntity originEntity)
+        /// <summary>
+        /// 处理一个月之类的数据
+        /// </summary>
+        /// <param name="sourceModelList"></param>
+        private static List<TargetEntity> ProcessMonth(List<SourceModel> sourceModelList, List<SourceModel> history)
+        {
+            List<TargetEntity> returnValue = new List<TargetEntity>();
+
+            var groups = sourceModelList.GroupBy(v => v.BusinessNo).ToList();
+
+            foreach (var group in groups)
+            {
+                List<TargetEntity> groupReturnValue = new List<TargetEntity>();
+
+                var buyList = group.Where(v => v.Mode == 1).ToList();
+                var sellList = group.Where(v => v.Mode == 2).ToList();
+
+                int totalBuyTime = buyList.Count;
+                int totalSellTime = sellList.Count;
+                int totalBuyCount = buyList.Sum(v => v.Count);
+                int totalSellCount = sellList.Sum(v => v.Count);
+
+                foreach (var sourceModel in group)
+                {
+                    TargetEntity targetEntity = ToTargetEntity(sourceModel);
+                    targetEntity.TotalBuyCount = totalBuyCount;
+                    targetEntity.TotalBuyTime = totalBuyTime;
+                    targetEntity.TotalSellCount = totalSellCount;
+                    targetEntity.TotalSellTime = totalSellTime;
+                    targetEntity.SaleMode = "直运";
+                    groupReturnValue.Add(targetEntity);
+                }
+
+                if (totalBuyCount == totalSellCount) //总进货数等于总销货数，判为直运
+                {
+                    foreach (var targetEntity in groupReturnValue)
+                    {
+                        targetEntity.TotalRemain = 0;
+                        targetEntity.TotalRequire = 0;
+                    }
+                }
+                else if (totalBuyCount > totalSellCount) //进货数大于销货数
+                {
+                    int value = totalBuyCount - totalSellCount;
+                    foreach (var targetEntity in groupReturnValue)
+                    {
+                        targetEntity.TotalRemain = value;
+                        targetEntity.TotalRequire = 0;
+                    }
+                }
+                else //进货数大于销货数
+                {
+                    int value = totalSellCount - totalBuyCount;
+                    foreach (var targetEntity in groupReturnValue)
+                    {
+                        targetEntity.TotalRemain = 0;
+                        targetEntity.TotalRequire = value;
+                    }
+                }
+
+                returnValue.AddRange(groupReturnValue);
+            }
+
+            return returnValue;
+        }
+
+        private static List<SourceModel> ToModelList(List<SourceEntity> entityList)
+        {
+            List<SourceModel> returnValue = new List<SourceModel>();
+
+            foreach (var entity in entityList)
+            {
+                var model = new SourceModel();
+
+                model.BusinessNo = entity.BusinessNo;
+                model.PaperNo = entity.PaperNo;
+                model.ProductNo = entity.ProductNo;
+                model.Count = entity.Count;
+                model.CreateTime = entity.CreateTime;
+                model.Mode = "采购".Equals(entity.Mode) ? 1 : 2;
+                model.Month = entity.CreateTime.Year * 100 + entity.CreateTime.Day;
+
+                returnValue.Add(model);
+            }
+
+            returnValue = returnValue.OrderBy(v => v.Month).ToList();
+
+            return returnValue;
+        }
+
+        private static TargetEntity ToTargetEntity(SourceModel sourceModel)
         {
             TargetEntity targetEntity = new TargetEntity();
 
-            targetEntity.BusinessNo = originEntity.BusinessNo;
-            targetEntity.PaperNo = originEntity.PaperNo;
-            targetEntity.ProductNo = originEntity.ProductNo;
-            targetEntity.BuyCount = originEntity.BuyCount;
-            targetEntity.SellCount = originEntity.SellCount;
+            targetEntity.BusinessNo = sourceModel.BusinessNo;
+            targetEntity.PaperNo = sourceModel.PaperNo;
+            targetEntity.ProductNo = sourceModel.ProductNo;
+            if (sourceModel.Mode == 1)
+            {
+                targetEntity.BuyCount = sourceModel.Count;
+            }
+            else
+            {
+                targetEntity.SellCount = sourceModel.Count;
+            }
 
             return targetEntity;
         }
@@ -253,7 +280,7 @@ namespace Sweety.Pages
             List<BusinessEntity> businessEntityList = GenerateBusinessEntityList();
 
             //原始数据表
-            List<SourceEnity> sourceEntityList = GenerateSourceEntityList(businessEntityList, productEntityList);
+            List<SourceEntity> sourceEntityList = GenerateSourceEntityList(businessEntityList, productEntityList);
 
             //数据源表
             ExcelHelper.WriteToExcel(fileName, sourceEntityList);
@@ -264,9 +291,9 @@ namespace Sweety.Pages
 
         // 生产基础数据表
         // 2017年，每天5-10单
-        private static List<SourceEnity> GenerateSourceEntityList(List<BusinessEntity> businessNoList, List<ProductEntity> productEntityList)
+        private static List<SourceEntity> GenerateSourceEntityList(List<BusinessEntity> businessNoList, List<ProductEntity> productEntityList)
         {
-            List<SourceEnity> returnValue = new List<SourceEnity>();
+            List<SourceEntity> returnValue = new List<SourceEntity>();
 
             Random random = new Random();
             DateTime today = DateTime.Now.Date;
@@ -282,7 +309,7 @@ namespace Sweety.Pages
                 var sourceCount = random.Next(5, 10);
                 for (int sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++)
                 {
-                    SourceEnity sourceEntity = new SourceEnity();
+                    SourceEntity sourceEntity = new SourceEntity();
 
                     //随机取交易号
                     sourceEntity.BusinessNo = businessNoList[random.Next(businessNoList.Count)].BusinessNo;
@@ -309,35 +336,14 @@ namespace Sweety.Pages
             return returnValue;
         }
 
-
-        private static List<OriginEntity> ToOriginEntityList(List<Business> businessList)
-        {
-            List<OriginEntity> returnValue = new List<OriginEntity>();
-
-            foreach (var business in businessList)
-            {
-                foreach (var paper in business.PaperList)
-                {
-                    OriginEntity originEntity = new OriginEntity();
-
-                    originEntity.BusinessNo = business.BusinessNo;
-                    originEntity.PaperNo = paper.PaperNo;
-                    originEntity.ProductNo = business.ProductNo;
-                    originEntity.BuyCount = paper.BuyCount;
-                    originEntity.SellCount = paper.SellCount;
-
-                    returnValue.Add(originEntity);
-                }
-            }
-
-            return returnValue;
-        }
-
         private static List<ProductEntity> GenerateProductEntityList()
         {
             List<ProductEntity> productEntityList = new List<ProductEntity>();
 
-            var names = new List<string> { "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝", "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓" };
+            var names = new List<string> {
+                "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝"
+                //, "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓"
+            };
             for (int i = 0; i < names.Count; i++)
             {
                 var productEntity = new ProductEntity();
