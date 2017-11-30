@@ -81,8 +81,10 @@
     <Compile Include="Controls\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Entity\BusinessEntity.cs" />
     <Compile Include="Entity\OriginEntity.cs" />
     <Compile Include="Entity\ProductEntity.cs" />
+    <Compile Include="Entity\SourceEnity.cs" />
     <Compile Include="Entity\TargetEntity.cs" />
     <Compile Include="ExcelHelper.cs" />
     <Compile Include="Model\BusinessMode.cs" />

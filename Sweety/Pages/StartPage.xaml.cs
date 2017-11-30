@@ -242,109 +242,73 @@ namespace Sweety.Pages
             }
         }
 
-        /// <summary>
-        /// 生成测试数据
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            List<ProductEntity> productEntityList = GetProductEntityList();
+            string fileName = @"F:\Input2017113001.xlsx";
 
-            List<Business> businessList = GetBusinessList(productEntityList);
+            //商品表
+            List<ProductEntity> productEntityList = GenerateProductEntityList();
 
-            List<OriginEntity> originEntityList = ToOriginEntityList(businessList);
+            //交易
+            List<BusinessEntity> businessEntityList = GenerateBusinessEntityList();
 
-            //var xx = ExcelHelper.ReadFromExcel<OriginEntity>(@"F:\sample.xlsx");
+            //原始数据表
+            List<SourceEnity> sourceEntityList = GenerateSourceEntityList(businessEntityList, productEntityList);
 
-            ExcelHelper.WriteToExcel(@"F:\sample2.xlsx", productEntityList);
-            ExcelHelper.WriteToExcel(@"F:\sample2.xlsx", originEntityList);
+            //数据源表
+            ExcelHelper.WriteToExcel(fileName, sourceEntityList);
+            ExcelHelper.WriteToExcel(fileName, productEntityList);
+            ExcelHelper.WriteToExcel(fileName, businessEntityList);
+
         }
 
-        private static List<Business> GetBusinessList(List<ProductEntity> productEntityList)
+        // 生产基础数据表
+        // 2017年，每天5-10单
+        private static List<SourceEnity> GenerateSourceEntityList(List<BusinessEntity> businessNoList, List<ProductEntity> productEntityList)
         {
-            List<Business> businessList = new List<Business>();
+            List<SourceEnity> returnValue = new List<SourceEnity>();
 
             Random random = new Random();
+            DateTime today = DateTime.Now.Date;
 
-            //一共100个交易号
-            int businessCount = 100;
+            int businessNo = 1;
 
-            for (int businessIndex = 0; businessIndex < businessCount; businessIndex++)
+            for (int i = -300; i < 0; i++)
             {
-                Business business = new Business();
-                business.BusinessNo = string.Format("BN{0:D6}", businessIndex + 1);
+                //指定日期
+                var day = today.AddDays(i);
 
-                //每张单据里面放一个产品
-                business.ProductNo = productEntityList[random.Next(productEntityList.Count)].ProductNo;
-
-                //每个交易号随机拆成1到3个单据号
-                int paperCount = random.Next(1, 4);
-
-                business.PaperList = new List<Paper>();
-                for (int paperIndex = 0; paperIndex < paperCount; paperIndex++)
+                //每天5-10单
+                var sourceCount = random.Next(5, 10);
+                for (int sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++)
                 {
-                    Paper paper = new Paper();
-                    paper.PaperNo = string.Format("PN{0:D6}", businessIndex * 98 + paperIndex);
-                    business.PaperList.Add(paper);
+                    SourceEnity sourceEntity = new SourceEnity();
 
-                    if (paperCount == 1)
-                    {
-                        paper.BuyCount = random.Next(200, 300);
-                        paper.SellCount = paper.BuyCount;
-                    }
-                    else if (paperIndex == paperCount - 1)
-                    {
-                        int totalBuyCount = business.PaperList.Sum(v => v.BuyCount);
-                        int totalSellCount = business.PaperList.Sum(v => v.SellCount);
-                        if (totalBuyCount == totalSellCount)
-                        {
-                            paper.BuyCount = random.Next(200, 300);
-                            paper.SellCount = paper.BuyCount;
-                        }
-                        else if (totalBuyCount < totalSellCount)
-                        {
-                            paper.BuyCount = totalSellCount - totalBuyCount;
-                        }
-                        else
-                        {
-                            paper.SellCount = totalBuyCount - totalSellCount;
-                        }
-                    }
-                    else
-                    {
-                        //随机填充采购数和销售数
-                        switch (random.Next() % 3)
-                        {
-                            case 0:
-                                {
-                                    paper.BuyCount = random.Next(200, 300);
-                                    paper.SellCount = paper.BuyCount;
-                                }
-                                break;
-                            case 1:
-                                {
-                                    paper.BuyCount = random.Next(150, 250);
-                                    paper.SellCount = random.Next(250, 350);
-                                }
-                                break;
-                            case 2:
-                                {
-                                    paper.SellCount = random.Next(150, 250);
-                                    paper.BuyCount = random.Next(250, 350);
-                                }
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    //随机取交易号
+                    sourceEntity.BusinessNo = businessNoList[random.Next(businessNoList.Count)].BusinessNo;
+
+                    //生成单据号
+                    sourceEntity.PaperNo = string.Format("PN{0:D6}", businessNo++);
+
+                    //随机取产品号
+                    sourceEntity.ProductNo = productEntityList[random.Next(productEntityList.Count)].ProductNo;
+
+                    //模式
+                    sourceEntity.Mode = random.Next() % 2 == 0 ? "销售" : "采购";
+
+                    //数量
+                    sourceEntity.Count = random.Next(100, 300);
+
+                    //日期
+                    sourceEntity.CreateTime = day;
+
+                    returnValue.Add(sourceEntity);
                 }
-
-                businessList.Add(business);
             }
 
-            return businessList;
+            return returnValue;
         }
+
 
         private static List<OriginEntity> ToOriginEntityList(List<Business> businessList)
         {
@@ -369,7 +333,7 @@ namespace Sweety.Pages
             return returnValue;
         }
 
-        private static List<ProductEntity> GetProductEntityList()
+        private static List<ProductEntity> GenerateProductEntityList()
         {
             List<ProductEntity> productEntityList = new List<ProductEntity>();
 
@@ -387,5 +351,21 @@ namespace Sweety.Pages
             return productEntityList;
         }
 
+        private static List<BusinessEntity> GenerateBusinessEntityList()
+        {
+            List<BusinessEntity> returnValue = new List<BusinessEntity>();
+
+            for (int i = 1; i < 100; i++)
+            {
+                BusinessEntity entity = new BusinessEntity();
+
+                entity.BusinessNo = string.Format("BN{0:D5}", i + 1);
+                entity.BusinessName = string.Format("交易名称{0:D5}", i + 1);
+
+                returnValue.Add(entity);
+            }
+
+            return returnValue;
+        }
     }
 }

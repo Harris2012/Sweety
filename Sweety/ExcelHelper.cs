@@ -98,7 +98,7 @@ namespace Sweety
         }
 
         /// <summary>
-        /// 将数据写入excel文件并关闭excel文件
+        /// 将数据写入excel文件并关闭excel文件。如果已存在，则尝试追加表
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="excelFilePath"></param>
@@ -116,7 +116,16 @@ namespace Sweety
             }
 
             Excel.Application app = GetApplication();
-            Excel.Workbook book = app.Workbooks.Add();
+            Excel.Workbook book;
+            if (System.IO.File.Exists(excelFilePath))
+            {
+                book = app.Workbooks.Open(excelFilePath);
+            }
+            else
+            {
+                book = app.Workbooks.Add();
+                book.SaveAs(excelFilePath);
+            }
 
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
@@ -153,8 +162,7 @@ namespace Sweety
                     valueCellRange.Value = property.GetValue(entityList[row], null);
                 }
             }
-            book.SaveAs(excelFilePath);
-            book.Close();
+            book.Close(true);
             app.Quit();
         }
 
