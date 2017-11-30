@@ -4,6 +4,7 @@ using Sweety.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -57,14 +58,27 @@ namespace Sweety.Pages
 
                     try
                     {
+                        AppendMessage("开始读取excel文件.");
+                        Stopwatch watch = Stopwatch.StartNew();
                         List<SourceEntity> sourceEntityList = ExcelHelper.ReadFromExcel<SourceEntity>(inputFilePath);
+                        watch.Stop();
+                        AppendMessage("读取Excel文件完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
 
+                        AppendMessage("开始处理数据");
+                        watch.Restart();
                         Dictionary<int, List<TargetEntity>> targetDictionary = Process(sourceEntityList);
+                        AppendMessage("处理数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
 
+                        AppendMessage("开始写入结果文件");
                         foreach (var target in targetDictionary)
                         {
+                            AppendMessage("正在写入" + target.Key + "的数据");
+                            watch.Restart();
                             ExcelHelper.WriteToExcel(outputFilePath, target.Key.ToString(), target.Value);
+                            watch.Stop();
+                            AppendMessage("写入" + target.Key + "的数据完成，耗时" + watch.ElapsedMilliseconds + "毫秒");
                         }
+                        AppendMessage("写入结果文件完成");
 
                         message = "Success";
                     }
@@ -285,9 +299,9 @@ namespace Sweety.Pages
             List<SourceEntity> sourceEntityList = GenerateSourceEntityList(businessEntityList, productEntityList);
 
             //数据源表
-            ExcelHelper.WriteToExcel(fileName, sourceEntityList);
-            ExcelHelper.WriteToExcel(fileName, productEntityList);
             ExcelHelper.WriteToExcel(fileName, businessEntityList);
+            ExcelHelper.WriteToExcel(fileName, productEntityList);
+            ExcelHelper.WriteToExcel(fileName, sourceEntityList);
 
         }
 
@@ -307,8 +321,8 @@ namespace Sweety.Pages
                 //指定日期
                 var day = today.AddDays(i);
 
-                //每天5-10单
-                var sourceCount = random.Next(5, 10);
+                //每天30-50单
+                var sourceCount = random.Next(30, 50);
                 for (int sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++)
                 {
                     SourceEntity sourceEntity = new SourceEntity();
