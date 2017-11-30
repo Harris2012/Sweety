@@ -176,15 +176,15 @@ namespace Sweety.Pages
                 requireGroup.Require -= count;
 
                 //处理子单
-                foreach (var remainEntity in remainGroup.EntityList)
-                {
-                    remainEntity.Remain -= count;
-                    remainEntity.RelatedPapers.AddRange(requirePaperNos);
-                }
-
                 foreach (var requireEntity in requireGroup.EntityList)
                 {
+                    requireEntity.Require = requireGroup.Require;
                     requireEntity.RelatedPapers.AddRange(remainPaperNos);
+                }
+                foreach (var remainEntity in remainGroup.EntityList)
+                {
+                    remainEntity.Remain = remainGroup.Remain;
+                    remainEntity.RelatedPapers.AddRange(requirePaperNos);
                 }
 
                 if (remainGroup.Remain <= 0)
@@ -216,12 +216,13 @@ namespace Sweety.Pages
                 //处理子单
                 foreach (var requireEntity in requireGroup.EntityList)
                 {
-                    requireEntity.Require -= count;
+                    requireEntity.Require = requireGroup.Require;
                     requireEntity.RelatedPapers.AddRange(remainPaperNos);
                 }
 
                 foreach (var remainEntity in remainGroup.EntityList)
                 {
+                    remainEntity.Remain = requireGroup.Remain;
                     remainEntity.RelatedPapers.AddRange(requirePaperNos);
                 }
 
