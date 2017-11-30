@@ -108,8 +108,8 @@ namespace Sweety.Pages
 
             List<SourceModel> sourceModelList = ToModelList(sourceEntityList);
 
-            List<TargetEntity> remainHistory = new List<TargetEntity>();
-            List<TargetEntity> requireHistory = new List<TargetEntity>();
+            List<TargetEntity> theRemainHistory = new List<TargetEntity>();
+            List<TargetEntity> theRequireHistory = new List<TargetEntity>();
 
             var months = sourceModelList.GroupBy(v => v.Month).ToDictionary(v => v.Key, v => v.ToList());
             foreach (var month in months)
@@ -126,11 +126,8 @@ namespace Sweety.Pages
                     var remainGroups = ToGroup(remainEntitys);
                     foreach (var remainGroup in remainGroups)
                     {
-                        ProcessRemain(remainGroup, requireHistory);
+                        ProcessRemain(remainGroup, theRequireHistory);
                     }
-
-                    remainEntitys = remainEntitys.Where(v => v.Remain > 0).ToList();
-                    remainHistory.AddRange(remainEntitys);
                 }
 
                 //本月不足的产品
@@ -140,15 +137,18 @@ namespace Sweety.Pages
                     var requireGroups = ToGroup(requireEntitys);
                     foreach (var requireGroup in requireGroups)
                     {
-                        ProcessRequire(requireGroup, remainHistory);
+                        ProcessRequire(requireGroup, theRemainHistory);
                     }
-
-                    requireEntitys = requireEntitys.Where(v => v.Require > 0).ToList();
-                    requireHistory.AddRange(requireEntitys);
                 }
 
-                remainHistory.RemoveAll(v => v.Remain == 0);
-                requireHistory.RemoveAll(v => v.Require == 0);
+                theRemainHistory.RemoveAll(v => v.Remain == 0);
+                theRequireHistory.RemoveAll(v => v.Require == 0);
+
+                remainEntitys = remainEntitys.Where(v => v.Remain > 0).ToList();
+                theRemainHistory.AddRange(remainEntitys);
+
+                requireEntitys = requireEntitys.Where(v => v.Require > 0).ToList();
+                theRequireHistory.AddRange(requireEntitys);
 
                 returnValue.Add(month.Key, processResult);
             }
@@ -178,7 +178,7 @@ namespace Sweety.Pages
                 //处理子单
                 foreach (var remainEntity in remainGroup.EntityList)
                 {
-                    remainEntity.Require -= count;
+                    remainEntity.Remain -= count;
                     remainEntity.RelatedPapers.AddRange(requirePaperNos);
                 }
 
@@ -210,8 +210,8 @@ namespace Sweety.Pages
                 List<string> remainPaperNos = remainGroup.EntityList.Select(v => "[" + v.PaperNo + "]").ToList();
 
                 int count = Math.Min(requireGroup.Require, remainGroup.Remain);
-                requireGroup.Remain -= count;
-                remainGroup.Require -= count;
+                requireGroup.Require -= count;
+                remainGroup.Remain -= count;
 
                 //处理子单
                 foreach (var requireEntity in requireGroup.EntityList)
