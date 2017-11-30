@@ -49,6 +49,11 @@ namespace Sweety
                         T entity = new T();
                         foreach (var property in type.GetProperties())
                         {
+                            if (!property.IsDefined(typeof(ExcelColumnAttribute), false))
+                            {
+                                continue;
+                            }
+
                             ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
 
                             Excel.Range cellRange = range[row, columnAttribute.ColumnIndex];
@@ -160,20 +165,26 @@ namespace Sweety
             Excel.Range range = newWorkSheet.Range[startCell, endCell];
             foreach (var property in properties)
             {
-                ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+                if (property.IsDefined(typeof(ExcelColumnAttribute), false))
+                {
+                    ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
 
-                Excel.Range titleCellRange = range[1, columnAttribute.ColumnIndex];
-                titleCellRange.Value = columnAttribute.Name;
+                    Excel.Range titleCellRange = range[1, columnAttribute.ColumnIndex];
+                    titleCellRange.Value = columnAttribute.Name;
+                }
             }
 
             foreach (var property in properties)
             {
-                ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
-
-                for (int row = 0; row < entityList.Count; row++)
+                if (property.IsDefined(typeof(ExcelColumnAttribute), false))
                 {
-                    Excel.Range valueCellRange = range[row + 2, columnAttribute.ColumnIndex];
-                    valueCellRange.Value = property.GetValue(entityList[row], null);
+                    ExcelColumnAttribute columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+
+                    for (int row = 0; row < entityList.Count; row++)
+                    {
+                        Excel.Range valueCellRange = range[row + 2, columnAttribute.ColumnIndex];
+                        valueCellRange.Value = property.GetValue(entityList[row], null);
+                    }
                 }
             }
             book.Close(true);

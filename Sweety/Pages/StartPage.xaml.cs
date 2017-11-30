@@ -108,8 +108,8 @@ namespace Sweety.Pages
 
             List<SourceModel> sourceModelList = ToModelList(sourceEntityList);
 
-            List<SourceModel> remainHistory = new List<SourceModel>();
-            List<SourceModel> requireHistory = new List<SourceModel>();
+            List<TargetEntity> remainHistory = new List<TargetEntity>();
+            List<TargetEntity> requireHistory = new List<TargetEntity>();
 
             var months = sourceModelList.GroupBy(v => v.Month).ToDictionary(v => v.Key, v => v.ToList());
             foreach (var month in months)
@@ -119,9 +119,69 @@ namespace Sweety.Pages
                 //处理本月数据
                 var processResult = ProcessMonth(month.Value);
 
-                //还历史账单
+                //本月有结余的产品
+                var remains = processResult.Where(v => v.Remain > 0).ToList();
+                if (remains.Count > 0)
+                {
+                    foreach (var remain in remains)
+                    {
+                        var historys = requireHistory.Where(v => v.BusinessNo == remain.BusinessNo && v.ProductNo == remain.ProductNo).ToList();
+                        if (historys.Count > 0)
+                        {
+                            for (int i = 0; i < historys.Count; i++)
+                            {
+                                int count = Math.Min(remain.Remain, historys[i].Require);
+                                historys[i].Require -= count;
+                                remain.Remain -= count;
+                                historys[i].RelatedPapers.Add(remain.PaperNo);
+                                remain.RelatedPapers.Add(historys[i].PaperNo);
+                                historys[i].Remarks.Add(string.Format("[=>{1}:{2}]", historys[i].PaperNo, count));
+                                remain.Remarks.Add(string.Format("[=>{1}:{2}]", historys[i].PaperNo, count));
 
-                //本次记账
+                                if (remain.Remain <= 0)
+                                {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    remains = remains.Where(v => v.Remain > 0).ToList();
+                    remainHistory.AddRange(remains);
+                }
+
+                //本月不足的产品
+                var requires = processResult.Where(v => v.Require > 0).ToList();
+                if (requires.Count > 0)
+                {
+                    foreach (var require in requires)
+                    {
+                        var historys = remainHistory.Where(v => v.BusinessNo == require.BusinessNo && v.ProductNo == require.ProductNo).ToList();
+                        if (historys.Count > 0)
+                        {
+                            for (int i = 0; i < historys.Count; i++)
+                            {
+                                int count = Math.Min(require.Require, historys[i].Remain);
+                                historys[i].Remain -= count;
+                                require.Require -= count;
+                                historys[i].RelatedPapers.Add(require.PaperNo);
+                                require.RelatedPapers.Add(historys[i].PaperNo);
+                                historys[i].Remarks.Add(string.Format("[{0}=>:{1}]", historys[i].PaperNo, count));
+                                require.Remarks.Add(string.Format("[{0}=>:{1}]", historys[i].PaperNo, require.PaperNo, count));
+                            }
+                            if (require.Require <= 0)
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    requires = processResult.Where(v => v.Require > 0).ToList();
+                    requireHistory.AddRange(requires);
+                }
+
+                remainHistory.RemoveAll(v => v.Remain == 0);
+                requireHistory.RemoveAll(v => v.Require == 0);
 
                 returnValue.Add(month.Key, processResult);
             }

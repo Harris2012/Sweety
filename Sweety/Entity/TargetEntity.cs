@@ -49,16 +49,22 @@ namespace Sweety.Entity
         [ExcelColumn("销售模式", 12)]
         public string SaleMode { get; set; }
 
-        [ExcelColumn("备注", 13)]
+        [ExcelColumn("尚余", 13)]
+        public int Remain { get; set; }
+
+        [ExcelColumn("尚缺", 14)]
+        public int Require { get; set; }
+
+        [ExcelColumn("备注", 15)]
         public string Remark
         {
             get
             {
-                return string.Join("。", this.Remarks);
+                return string.Join(string.Empty, this.Remarks);
             }
         }
 
-        [ExcelColumn("关联单据号", 14)]
+        [ExcelColumn("关联单据号", 16)]
         public string RelatedPaper
         {
             get
@@ -66,10 +72,6 @@ namespace Sweety.Entity
                 return string.Join(",", this.RelatedPapers);
             }
         }
-
-        public int Remain { get; set; }
-
-        public int Require { get; set; }
 
         /// <summary>
         /// 关联单据号
