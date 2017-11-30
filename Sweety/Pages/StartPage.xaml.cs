@@ -108,14 +108,15 @@ namespace Sweety.Pages
 
             List<SourceModel> sourceModelList = ToModelList(sourceEntityList);
 
-            List<SourceModel> history = new List<SourceModel>();
+            List<SourceModel> remainHistory = new List<SourceModel>();
+            List<SourceModel> requireHistory = new List<SourceModel>();
 
             var months = sourceModelList.GroupBy(v => v.Month).ToDictionary(v => v.Key, v => v.ToList());
             foreach (var month in months)
             {
                 var items = month.Value;
 
-                var processResult = ProcessMonth(month.Value, history);
+                var processResult = ProcessMonth(month.Value, remainHistory, requireHistory);
 
                 returnValue.Add(month.Key, processResult);
             }
@@ -125,9 +126,11 @@ namespace Sweety.Pages
 
         /// <summary>
         /// 处理一个月之类的数据
+        /// RemainHistory：历史库存
+        /// RequireHistory：将来需要补充
         /// </summary>
         /// <param name="sourceModelList"></param>
-        private static List<TargetEntity> ProcessMonth(List<SourceModel> sourceModelList, List<SourceModel> history)
+        private static List<TargetEntity> ProcessMonth(List<SourceModel> sourceModelList, List<SourceModel> remainHistory, List<SourceModel> requireHistory)
         {
             List<TargetEntity> returnValue = new List<TargetEntity>();
 
@@ -166,29 +169,44 @@ namespace Sweety.Pages
                         groupReturnValue.Add(targetEntity);
                     }
 
-                    if (productTotalBuyCount == productTotalSellCount) //总进货数等于总销货数，判为直运
+                    if (productTotalBuyCount == productTotalSellCount)
                     {
+                        //总进货数等于总销货数，判为直运
+
                         foreach (var targetEntity in groupReturnValue)
                         {
                             targetEntity.SaleMode = "直运";
                         }
                     }
-                    else if (productTotalBuyCount > productTotalSellCount) //进货数大于销货数
+                    else if (productTotalBuyCount > productTotalSellCount)
                     {
-                        int value = productTotalBuyCount - productTotalSellCount;
+                        //本月结余的量
+                        int remain = productTotalBuyCount - productTotalSellCount;
                         foreach (var targetEntity in groupReturnValue)
                         {
                             targetEntity.SaleMode = "本月没卖完";
-                            targetEntity.ProductTotalRemain = value;
+                            targetEntity.ProductTotalRemain = remain;
+                            targetEntity.Remain = remain;
+                        }
+
+                        //进货数大于销货数
+                        //本次结算，多出来的部分，尝试去补历史账单
+                        foreach (var require in requireHistory)
+                        {
+
                         }
                     }
-                    else //进货数大于销货数
+                    else
                     {
-                        int value = productTotalSellCount - productTotalBuyCount;
+                        //进货数大于销货数
+                        //本次结算，不足的部分，记录到历史账单中
+
+                        int require = productTotalSellCount - productTotalBuyCount;
                         foreach (var targetEntity in groupReturnValue)
                         {
                             targetEntity.SaleMode = "本月不够卖";
-                            targetEntity.ProductTotalRequire = value;
+                            targetEntity.ProductTotalRequire = require;
+                            targetEntity.Require = require;
                         }
                     }
                 }
