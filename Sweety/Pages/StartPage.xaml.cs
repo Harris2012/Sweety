@@ -116,7 +116,12 @@ namespace Sweety.Pages
             {
                 var items = month.Value;
 
-                var processResult = ProcessMonth(month.Value, remainHistory, requireHistory);
+                //处理本月数据
+                var processResult = ProcessMonth(month.Value);
+
+                //还历史账单
+
+                //本次记账
 
                 returnValue.Add(month.Key, processResult);
             }
@@ -126,21 +131,19 @@ namespace Sweety.Pages
 
         /// <summary>
         /// 处理一个月之类的数据
-        /// RemainHistory：历史库存
-        /// RequireHistory：将来需要补充
         /// </summary>
-        /// <param name="sourceModelList"></param>
-        private static List<TargetEntity> ProcessMonth(List<SourceModel> sourceModelList, List<SourceModel> remainHistory, List<SourceModel> requireHistory)
+        /// <param name="monthSourceModelList"></param>
+        private static List<TargetEntity> ProcessMonth(List<SourceModel> monthSourceModelList)
         {
             List<TargetEntity> returnValue = new List<TargetEntity>();
 
-            var groups = sourceModelList.GroupBy(v => v.BusinessNo).ToList();
+            var businesses = monthSourceModelList.GroupBy(v => v.BusinessNo).ToList();
 
-            foreach (var group in groups)
+            foreach (var business in businesses)
             {
                 List<TargetEntity> groupReturnValue = new List<TargetEntity>();
 
-                var productGroups = group.GroupBy(v => v.ProductNo).ToList();
+                var productGroups = business.GroupBy(v => v.ProductNo).ToList();
                 foreach (var productGroup in productGroups)
                 {
                     var productBuyList = productGroup.Where(v => v.Mode == 1).ToList();
@@ -187,13 +190,6 @@ namespace Sweety.Pages
                             targetEntity.SaleMode = "本月没卖完";
                             targetEntity.ProductTotalRemain = remain;
                             targetEntity.Remain = remain;
-                        }
-
-                        //进货数大于销货数
-                        //本次结算，多出来的部分，尝试去补历史账单
-                        foreach (var require in requireHistory)
-                        {
-
                         }
                     }
                     else
