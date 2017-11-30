@@ -17,29 +17,29 @@ namespace Sweety.Entity
         [ExcelColumn("产品编号", 3)]
         public string ProductNo { get; set; }
 
-        [ExcelColumn("采购数", 4)]
+        [ExcelColumn("产品采购数", 4)]
         public int BuyCount { get; set; }
 
-        [ExcelColumn("销售数", 5)]
+        [ExcelColumn("产品销售数", 5)]
         public int SellCount { get; set; }
 
-        [ExcelColumn("总进货数", 6)]
-        public int TotalBuyCount { get; set; }
+        [ExcelColumn("产品总采购数", 6)]
+        public int ProductBuyCount { get; set; }
 
-        [ExcelColumn("总进货次数", 7)]
-        public int TotalBuyTime { get; set; }
+        [ExcelColumn("产品总销售数", 7)]
+        public int ProductSellCount { get; set; }
 
-        [ExcelColumn("总销货次数", 8)]
-        public int TotalSellTime { get; set; }
+        [ExcelColumn("产品总采购次数", 8)]
+        public int ProductBuyTime { get; set; }
 
-        [ExcelColumn("总销货数", 9)]
-        public int TotalSellCount { get; set; }
+        [ExcelColumn("产品总销售次数", 9)]
+        public int ProductSellTime { get; set; }
 
-        [ExcelColumn("总剩余库存", 10)]
-        public int TotalRemain { get; set; }
+        [ExcelColumn("产品总剩余", 10)]
+        public int ProductTotalRemain { get; set; }
 
-        [ExcelColumn("总不足库存", 11)]
-        public int TotalRequire { get; set; }
+        [ExcelColumn("产品总不足", 11)]
+        public int ProductTotalRequire { get; set; }
 
         /// <summary>
         /// 直运

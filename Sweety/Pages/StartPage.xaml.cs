@@ -137,51 +137,59 @@ namespace Sweety.Pages
             {
                 List<TargetEntity> groupReturnValue = new List<TargetEntity>();
 
-                var buyList = group.Where(v => v.Mode == 1).ToList();
-                var sellList = group.Where(v => v.Mode == 2).ToList();
-
-                int totalBuyTime = buyList.Count;
-                int totalSellTime = sellList.Count;
-                int totalBuyCount = buyList.Sum(v => v.Count);
-                int totalSellCount = sellList.Sum(v => v.Count);
-
-                foreach (var sourceModel in group)
+                var productGroups = group.GroupBy(v => v.ProductNo).ToList();
+                foreach (var productGroup in productGroups)
                 {
-                    TargetEntity targetEntity = ToTargetEntity(sourceModel);
-                    targetEntity.TotalBuyCount = totalBuyCount;
-                    targetEntity.TotalBuyTime = totalBuyTime;
-                    targetEntity.TotalSellCount = totalSellCount;
-                    targetEntity.TotalSellTime = totalSellTime;
-                    groupReturnValue.Add(targetEntity);
-                }
+                    var productBuyList = productGroup.Where(v => v.Mode == 1).ToList();
+                    var productSellList = productGroup.Where(v => v.Mode == 2).ToList();
 
-                if (totalBuyCount == totalSellCount) //总进货数等于总销货数，判为直运
-                {
-                    foreach (var targetEntity in groupReturnValue)
+                    int productTotalBuyTime = productBuyList.Count;
+                    int productTotalBuyCount = productBuyList.Sum(v => v.Count);
+                    int productTotalSellTime = productSellList.Count;
+                    int productTotalSellCount = productSellList.Sum(v => v.Count);
+
+                    foreach (var sourceModel in productGroup)
                     {
-                        targetEntity.SaleMode = "直运";
-                        targetEntity.TotalRemain = 0;
-                        targetEntity.TotalRequire = 0;
+                        TargetEntity targetEntity = ToTargetEntity(sourceModel);
+
+                        if (targetEntity.BuyCount > 0)
+                        {
+                            targetEntity.ProductBuyTime = productTotalBuyTime;
+                            targetEntity.ProductBuyCount = productTotalBuyCount;
+                        }
+                        if (targetEntity.SellCount > 0)
+                        {
+                            targetEntity.ProductSellTime = productTotalSellTime;
+                            targetEntity.ProductSellCount = productTotalSellCount;
+                        }
+
+                        groupReturnValue.Add(targetEntity);
                     }
-                }
-                else if (totalBuyCount > totalSellCount) //进货数大于销货数
-                {
-                    int value = totalBuyCount - totalSellCount;
-                    foreach (var targetEntity in groupReturnValue)
+
+                    if (productTotalBuyCount == productTotalSellCount) //总进货数等于总销货数，判为直运
                     {
-                        targetEntity.SaleMode = "没卖完";
-                        targetEntity.TotalRemain = value;
-                        targetEntity.TotalRequire = 0;
+                        foreach (var targetEntity in groupReturnValue)
+                        {
+                            targetEntity.SaleMode = "直运";
+                        }
                     }
-                }
-                else //进货数大于销货数
-                {
-                    int value = totalSellCount - totalBuyCount;
-                    foreach (var targetEntity in groupReturnValue)
+                    else if (productTotalBuyCount > productTotalSellCount) //进货数大于销货数
                     {
-                        targetEntity.SaleMode = "不够卖";
-                        targetEntity.TotalRemain = 0;
-                        targetEntity.TotalRequire = value;
+                        int value = productTotalBuyCount - productTotalSellCount;
+                        foreach (var targetEntity in groupReturnValue)
+                        {
+                            targetEntity.SaleMode = "本月没卖完";
+                            targetEntity.ProductTotalRemain = value;
+                        }
+                    }
+                    else //进货数大于销货数
+                    {
+                        int value = productTotalSellCount - productTotalBuyCount;
+                        foreach (var targetEntity in groupReturnValue)
+                        {
+                            targetEntity.SaleMode = "本月不够卖";
+                            targetEntity.ProductTotalRequire = value;
+                        }
                     }
                 }
 
@@ -331,13 +339,14 @@ namespace Sweety.Pages
 
             int businessNo = 1;
 
-            for (int i = -300; i < 0; i++)
+            for (int i = -80; i < 0; i++)
+            //for (int i = -300; i < 0; i++)
             {
                 //指定日期
                 var day = today.AddDays(i);
 
                 //每天30-50单
-                var sourceCount = random.Next(30, 50);
+                var sourceCount = random.Next(3, 5);
                 for (int sourceIndex = 0; sourceIndex < sourceCount; sourceIndex++)
                 {
                     SourceEntity sourceEntity = new SourceEntity();
@@ -372,7 +381,8 @@ namespace Sweety.Pages
             List<ProductEntity> productEntityList = new List<ProductEntity>();
 
             var names = new List<string> {
-                "苹果", "香蕉", "橘子", "柿子", "桃", "荔枝"
+                "苹果", "香蕉"
+                //, "橘子", "柿子", "桃", "荔枝"
                 //, "龙眼", "柑桔", "李子", "樱桃", "葡萄", "菠萝", "青梅", "椰子", "番石榴", "草莓"
             };
             for (int i = 0; i < names.Count; i++)
