@@ -25,10 +25,10 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="0" Grid.Column="0">Input File</TextBlock>
+        <TextBlock Grid.Row="0" Grid.Column="0">输入文件</TextBlock>
         <TextBox Grid.Row="0" Grid.Column="1" IsTabStop="True" TabIndex="1" Name="InputFilePathTextBox" MouseDoubleClick="InputFilePathTextBox_MouseDoubleClick"></TextBox>
 
-        <TextBlock Grid.Row="1" Grid.Column="0">Output File</TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0">输出文件</TextBlock>
         <TextBox Grid.Row="1" Grid.Column="1" TabIndex="2" IsTabStop="True" Name="OutputFilePathTextBox" MouseDoubleClick="OutputFilePathTextBox_MouseDoubleClick"></TextBox>
 
         <TextBlock Grid.Row="2" Grid.Column="0" Visibility="Collapsed">Mode</TextBlock>
@@ -43,11 +43,10 @@
         </StackPanel>
 
         <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal">
-            <!--<Button Width="100" Height="30" HorizontalAlignment="Left" Click="Button_Click" IsTabStop="True" TabIndex="6">Start</Button>-->
-            <Button Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource StartCommand}}" IsTabStop="True" TabIndex="6">Start</Button>
+            <Button Width="100" Height="30" HorizontalAlignment="Left" Command="{Binding Mode=OneWay, Source={StaticResource StartCommand}}" IsTabStop="True" TabIndex="6">开始</Button>
         </StackPanel>
 
-        <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">Message</TextBlock>
+        <TextBlock Grid.Row="5" Grid.Column="0" VerticalAlignment="Top">信息</TextBlock>
         <TextBox Grid.Row="5" Grid.Column="1" Name="OutputTextBox" AcceptsReturn="True" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" TabIndex="7" />
 
         <ctrl:StatusBar Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" x:Name="StatusBar" />

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Sweety.Entity
+namespace Sweety.InputEntity
 {
-    [ExcelTable("产品表")]
-    class ProductEntity
+    [ExcelTable("本期销项明细")]
+    class SellEntity
     {
-        [ExcelColumn("产品编号", 1)]
+        [ExcelColumn("销售合同号", 1)]
         public string ProductNo { get; set; }
 
-        [ExcelColumn("产品名称", 2)]
+        [ExcelColumn("商品数量", 4)]
         public string Name { get; set; }
     }
 }
