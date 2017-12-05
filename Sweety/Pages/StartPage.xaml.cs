@@ -62,7 +62,7 @@ namespace Sweety.Pages
                         List<SellEntity> sellEntityList = ExcelHelper.ReadFromExcel<SellEntity>(inputFilePath);
                         List<MappingEntity> mappingEntityList = ExcelHelper.ReadFromExcel<MappingEntity>(inputFilePath);
 
-                        List<TheOutputEntity> outputEntityList = Process(buyEntityList, sellEntityList, mappingEntityList);
+                        List<OutputBuyEntity> outputEntityList = Process(buyEntityList, sellEntityList, mappingEntityList);
 
                         ExcelHelper.WriteToExcel(outputFilePath, outputEntityList);
 
@@ -89,7 +89,7 @@ namespace Sweety.Pages
             }
         }
 
-        private List<TheOutputEntity> Process(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<MappingEntity> mappingEntityList)
+        private List<OutputBuyEntity> Process(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<MappingEntity> mappingEntityList)
         {
             throw new NotImplementedException();
         }

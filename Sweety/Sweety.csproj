@@ -89,7 +89,8 @@
     <Compile Include="Model\Paper.cs" />
     <Compile Include="Model\Business.cs" />
     <Compile Include="Model\Product.cs" />
-    <Compile Include="OutputEntity\TheOutputEntity.cs" />
+    <Compile Include="OutputEntity\OutputBuyEntity.cs" />
+    <Compile Include="OutputEntity\OutputSellEntity.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />
     <Compile Include="ValueType.cs" />
