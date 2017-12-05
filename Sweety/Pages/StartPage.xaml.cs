@@ -58,7 +58,7 @@ namespace Sweety.Pages
 
                     try
                     {
-
+                        Processor.Run(inputFilePath, outputFilePath);
 
                         message = "Success";
                     }
