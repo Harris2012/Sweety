@@ -58,7 +58,10 @@ namespace Sweety.Pages
 
                     try
                     {
-                        Processor.Run(inputFilePath, outputFilePath);
+                        ExcelReader reader = new ExcelReader();
+
+                        var xx = reader.GetExcelTableByOleDB(inputFilePath, "商务报表$");
+                        //Processor.Run(inputFilePath, outputFilePath);
 
                         message = "Success";
                     }
