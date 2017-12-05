@@ -85,12 +85,13 @@
     <Compile Include="InputEntity\SellEntity.cs" />
     <Compile Include="InputEntity\BuyEntity.cs" />
     <Compile Include="ExcelHelper.cs" />
-    <Compile Include="Model\BusinessMode.cs" />
-    <Compile Include="Model\Paper.cs" />
-    <Compile Include="Model\Business.cs" />
-    <Compile Include="Model\Product.cs" />
+    <Compile Include="Model\BuyModel.cs" />
+    <Compile Include="Model\InputGroup.cs" />
+    <Compile Include="Model\OutputGroup.cs" />
+    <Compile Include="Model\SellModel.cs" />
     <Compile Include="OutputEntity\OutputBuyEntity.cs" />
     <Compile Include="OutputEntity\OutputSellEntity.cs" />
+    <Compile Include="Processor.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />
     <Compile Include="ValueType.cs" />
@@ -136,6 +137,7 @@
   <ItemGroup>
     <Resource Include="Sweety.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
