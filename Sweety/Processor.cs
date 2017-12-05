@@ -14,7 +14,7 @@ namespace Sweety
         {
             List<BuyEntity> buyEntityList = ExcelHelper.ReadFromExcel<BuyEntity>(inputFilePath);
             List<SellEntity> sellEntityList = ExcelHelper.ReadFromExcel<SellEntity>(inputFilePath);
-            List<MappingEntity> mappingEntityList = ExcelHelper.ReadFromExcel<MappingEntity>(inputFilePath);
+            List<BusinessEntity> mappingEntityList = ExcelHelper.ReadFromExcel<BusinessEntity>(inputFilePath);
 
             InputGroup inputGroup = ToInputGroup(buyEntityList, sellEntityList, mappingEntityList);
 
@@ -30,7 +30,7 @@ namespace Sweety
         }
 
 
-        private static InputGroup ToInputGroup(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<MappingEntity> mappingEntityList)
+        private static InputGroup ToInputGroup(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<BusinessEntity> mappingEntityList)
         {
             InputGroup returnValue = new InputGroup();
 

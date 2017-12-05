@@ -178,7 +178,7 @@ namespace Sweety
         {
             int maxColumn = 0;
 
-            for (int column = 1; ; column++)
+            for (int column = 1; column < 50; column++)
             {
                 Excel.Range range = sheet.Cells[1, column];
                 if (string.IsNullOrEmpty(range.Text))
