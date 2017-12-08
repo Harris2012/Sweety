@@ -47,13 +47,13 @@ namespace Sweety
 
                 DataSet ds = new DataSet();
 
-                string sql = string.Format("select * from [{0}$]", tableName);
+                string sql = string.Format("select * from [{0}]", tableName);
 
                 OleDbDataAdapter adapter = new OleDbDataAdapter(sql, conn);
 
                 adapter.Fill(ds);
 
-                table = ds.Tables[tableName];
+                table = ds.Tables[0];
             }
 
             return table;

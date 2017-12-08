@@ -58,7 +58,7 @@ namespace Sweety.Pages
 
                     try
                     {
-                        var business = ExcelReader.ReadEntityList<BusinessEntity>(inputFilePath, "商务报表");
+                        //var business = ExcelReader.ReadEntityList<BusinessEntity>(inputFilePath, "商务报表");
 
                         var buy = ExcelReader.ReadEntityList<BuyEntity>(inputFilePath, "本期进项明细");
 
