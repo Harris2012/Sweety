@@ -58,10 +58,14 @@ namespace Sweety.Pages
 
                     try
                     {
-                        ExcelReader reader = new ExcelReader();
+                        var business = ExcelReader.ReadEntityList<BusinessEntity>(inputFilePath, "商务报表");
 
-                        var xx = reader.GetExcelTableByOleDB(inputFilePath, "商务报表$");
+                        var buy = ExcelReader.ReadEntityList<BuyEntity>(inputFilePath, "本期进项明细");
+
+                        var sell = ExcelReader.ReadEntityList<SellEntity>(inputFilePath, "本期销项明细");
                         //Processor.Run(inputFilePath, outputFilePath);
+
+                        var xx = 0;
 
                         message = "Success";
                     }
