@@ -14,8 +14,7 @@ namespace Sweety
         {
             List<BuyEntity> buyEntityList = ExcelReader.ReadEntityList<BuyEntity>(inputFilePath, "本期进项明细");
             List<SellEntity> sellEntityList = ExcelReader.ReadEntityList<SellEntity>(inputFilePath, "本期销项明细");
-            //List<MappingEntity> mappingEntityList = ExcelReader.ReadEntityList<MappingEntity>(inputFilePath, "商务报表");
-            List<MappingEntity> mappingEntityList = null;
+            List<MappingEntity> mappingEntityList = ExcelReader.ReadEntityList<MappingEntity>(inputFilePath, "商务报表");
 
             InputGroup inputGroup = ToInputGroup(buyEntityList, sellEntityList, mappingEntityList);
 
@@ -118,7 +117,7 @@ namespace Sweety
 
                 mappingModel.Applicant = mappingEntity.Applicant;
                 mappingModel.ContractNo = mappingEntity.ContractNo;
-                mappingModel.GoodsNo = mappingEntity.GoodsNo;
+                mappingModel.ProductNo = mappingEntity.ProductNo;
                 mappingModel.GroupCategory = mappingEntity.GroupCategory;
 
                 mappingModelList.Add(mappingModel);
@@ -130,6 +129,46 @@ namespace Sweety
         private static OutputGroup Process(InputGroup inputGroup)
         {
             OutputGroup returnValue = new OutputGroup();
+
+            if (inputGroup.BuyModelList == null || inputGroup.BuyModelList.Count == 0)
+            {
+                return returnValue;
+            }
+
+            if (inputGroup.SellModelList == null || inputGroup.SellModelList.Count == 0)
+            {
+                return returnValue;
+            }
+
+            if (inputGroup.MappingModelList == null || inputGroup.MappingModelList.Count == 0)
+            {
+                return returnValue;
+            }
+
+            var sellModelList = inputGroup.MappingModelList;
+            var buyModelList = inputGroup.BuyModelList;
+            var mappingModelList = inputGroup.MappingModelList;
+
+            //从商务报表中找到“本期销项明细”表中销售合同号对应的货号
+            foreach (var sellModel in inputGroup.SellModelList)
+            {
+                var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo).ToList();
+                if (mappings.Count == 0)
+                {
+                    sellModel.IsDone = true;
+                    sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
+                }
+
+                if (mappings.Count > 1)
+                {
+                    sellModel.IsDone = true;
+                    sellModel.Remarks.Add(Remark.FindMultiContractNoInMapping);
+                }
+
+                var mapping = mappings[0];
+
+                sellModel.ProductNo = mapping.ProductNo;
+            }
 
 
             return returnValue;

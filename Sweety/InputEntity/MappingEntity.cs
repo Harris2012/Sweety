@@ -15,7 +15,7 @@ namespace Sweety.InputEntity
         public string Applicant { get; set; }
 
         [ExcelColumn("货号", 12)]
-        public string GoodsNo { get; set; }
+        public string ProductNo { get; set; }
 
         [ExcelColumn("合同编号", 13)]
         public string ContractNo { get; set; }

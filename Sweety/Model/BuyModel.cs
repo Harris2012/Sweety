@@ -10,6 +10,12 @@ namespace Sweety.Model
     /// </summary>
     class BuyModel
     {
+        public BuyModel()
+        {
+            Messages = new List<string>();
+            Remarks = new List<Remark>();
+        }
+
         /// <summary>
         /// 序号
         /// </summary>
@@ -69,5 +75,16 @@ namespace Sweety.Model
         /// 收票吨数
         /// </summary>
         public float ReceiveTicketCount { get; set; }
+
+        #region 日志
+        /// <summary>
+        /// 本条数据是否已经处理完成
+        /// </summary>
+        public bool IsDone { get; set; }
+
+        public List<Remark> Remarks { get; private set; }
+
+        public List<string> Messages { get; private set; }
+        #endregion
     }
 }

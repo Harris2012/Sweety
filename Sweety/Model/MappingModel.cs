@@ -23,7 +23,7 @@ namespace Sweety.Model
         /// <summary>
         /// 货号
         /// </summary>
-        public string GoodsNo { get; set; }
+        public string ProductNo { get; set; }
 
         /// <summary>
         /// 合同编号
