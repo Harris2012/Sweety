@@ -58,8 +58,10 @@ namespace Sweety
 
             //读取Excel
             List<T> entityList = new List<T>();
-            foreach (DataRow row in table.Rows)
+            for (int i = 1; i < table.Rows.Count; i++)
             {
+                DataRow row = table.Rows[i];
+
                 var entity = new T();
 
                 foreach (var columnInfo in columnInfoList)
@@ -85,6 +87,15 @@ namespace Sweety
                                     if (long.TryParse(value, out longValue))
                                     {
                                         property.SetValue(entity, longValue, null);
+                                    }
+                                }
+                                break;
+                            case "System.Single":
+                                {
+                                    float floatValue = 0;
+                                    if (float.TryParse(value, out floatValue))
+                                    {
+                                        property.SetValue(entity, floatValue, null);
                                     }
                                 }
                                 break;
