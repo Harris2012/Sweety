@@ -58,12 +58,7 @@ namespace Sweety.Pages
 
                     try
                     {
-                        //var business = ExcelReader.ReadEntityList<BusinessEntity>(inputFilePath, "商务报表");
-
-                        var buy = ExcelReader.ReadEntityList<BuyEntity>(inputFilePath, "本期进项明细");
-
-                        var sell = ExcelReader.ReadEntityList<SellEntity>(inputFilePath, "本期销项明细");
-                        //Processor.Run(inputFilePath, outputFilePath);
+                        Processor.Run(inputFilePath, outputFilePath);
 
                         var xx = 0;
 
@@ -86,8 +81,12 @@ namespace Sweety.Pages
             catch (Exception ex)
             {
                 AppendMessage(ex.ToString());
-
             }
+        }
+
+        private static void ToModel()
+        {
+
         }
 
         private void AppendMessage(string message)

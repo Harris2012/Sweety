@@ -17,6 +17,7 @@ namespace Sweety
             return coreApp;
         }
 
+        [Obsolete("请使用ExcelReader")]
         public static List<T> ReadFromExcel<T>(string excelFilePath) where T : class, new()
         {
             List<T> entityList = new List<T>();
