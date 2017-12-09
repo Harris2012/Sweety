@@ -9,16 +9,102 @@ namespace Sweety
 {
     class ExcelReader
     {
-        public static List<T> ReadEntityList<T>(string inputFilePath, string tableName)
+        public static List<T> ReadEntityList<T>(string inputFilePath, string tableName) where T : class, new()
         {
             var table = GetExcelTableByOleDB(inputFilePath, tableName);
 
-            if (table == null)
+            if (table == null && table.Rows.Count == 0)
             {
                 return null;
             }
 
+            List<T> entityList = ToEntityList<T>(table);
+
+            return entityList;
+        }
+
+        private static List<T> ToEntityList<T>(DataTable table) where T : class, new()
+        {
+            var type = typeof(T);
+
+            //Excel所有列
+            List<string> columnNames = new List<string>(table.Columns.Count);
+            var firstRow = table.Rows[0];
+            for (int i = 0; i < table.Columns.Count; i++)
+            {
+                columnNames.Add(firstRow[i].ToString());
+            }
+
+            //为属性确定列
+            List<ColumnInfo> columnInfoList = new List<ColumnInfo>();
+            var properties = type.GetProperties();
+            foreach (var property in properties)
+            {
+                if (!property.IsDefined(typeof(ExcelColumnAttribute), false))
+                {
+                    continue;
+                }
+
+                var columnAttribute = (ExcelColumnAttribute)property.GetCustomAttributes(typeof(ExcelColumnAttribute), false)[0];
+                var index = columnNames.IndexOf(columnAttribute.Name);
+                if (index < 0)
+                {
+                    continue;
+                }
+
+                columnAttribute.ColumnIndexFromExcel = index;
+                columnInfoList.Add(new ColumnInfo { PropertyInfo = property, ColumnAttribute = columnAttribute });
+            }
+
+            //读取Excel
             List<T> entityList = new List<T>();
+            foreach (DataRow row in table.Rows)
+            {
+                var entity = new T();
+
+                foreach (var columnInfo in columnInfoList)
+                {
+                    var property = columnInfo.PropertyInfo;
+                    var value = row[columnInfo.ColumnAttribute.ColumnIndexFromExcel].ToString();
+                    try
+                    {
+                        switch (columnInfo.PropertyInfo.PropertyType.ToString())
+                        {
+                            case "System.Int32":
+                                {
+                                    int intValue = 0;
+                                    if (int.TryParse(value, out intValue))
+                                    {
+                                        property.SetValue(entity, intValue, null);
+                                    }
+                                }
+                                break;
+                            case "System.Int64":
+                                {
+                                    long longValue = 0;
+                                    if (long.TryParse(value, out longValue))
+                                    {
+                                        property.SetValue(entity, longValue, null);
+                                    }
+                                }
+                                break;
+                            case "System.String":
+                                {
+                                    property.SetValue(entity, value, null);
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        continue;
+                    }
+                }
+
+                entityList.Add(entity);
+            }
 
             return entityList;
         }

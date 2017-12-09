@@ -78,6 +78,7 @@
     </ApplicationDefinition>
     <Compile Include="attribute\ExcelColumnAttribute.cs" />
     <Compile Include="attribute\ExcelTableAttribute.cs" />
+    <Compile Include="ColumnInfo.cs" />
     <Compile Include="Controls\StatusBar.xaml.cs">
       <DependentUpon>StatusBar.xaml</DependentUpon>
     </Compile>

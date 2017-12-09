@@ -12,6 +12,11 @@ namespace Sweety
 
         public int ColumnIndex { get; private set; }
 
+        /// <summary>
+        /// 从Excel中读到的列序号
+        /// </summary>
+        public int ColumnIndexFromExcel { get; set; }
+
         public ExcelColumnAttribute(string name, int columnIndex)
         {
             this.Name = name;
