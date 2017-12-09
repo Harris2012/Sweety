@@ -14,7 +14,8 @@ namespace Sweety
         {
             List<BuyEntity> buyEntityList = ExcelReader.ReadEntityList<BuyEntity>(inputFilePath, "本期进项明细");
             List<SellEntity> sellEntityList = ExcelReader.ReadEntityList<SellEntity>(inputFilePath, "本期销项明细");
-            List<BusinessEntity> mappingEntityList = ExcelReader.ReadEntityList<BusinessEntity>(inputFilePath, "商务报表");
+            //List<MappingEntity> mappingEntityList = ExcelReader.ReadEntityList<MappingEntity>(inputFilePath, "商务报表");
+            List<MappingEntity> mappingEntityList = null;
 
             InputGroup inputGroup = ToInputGroup(buyEntityList, sellEntityList, mappingEntityList);
 
@@ -36,7 +37,7 @@ namespace Sweety
         /// <param name="sellEntityList">本期销项明细</param>
         /// <param name="mappingEntityList">商务报表</param>
         /// <returns></returns>
-        private static InputGroup ToInputGroup(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<BusinessEntity> mappingEntityList)
+        private static InputGroup ToInputGroup(List<BuyEntity> buyEntityList, List<SellEntity> sellEntityList, List<MappingEntity> mappingEntityList)
         {
             InputGroup returnValue = new InputGroup();
 
@@ -47,7 +48,12 @@ namespace Sweety
 
             if (sellEntityList != null && sellEntityList.Count > 0)
             {
+                returnValue.SellModelList = ToModel(sellEntityList);
+            }
 
+            if (mappingEntityList != null && mappingEntityList.Count > 0)
+            {
+                returnValue.MappingModelList = ToModel(mappingEntityList);
             }
 
             return returnValue;
@@ -102,9 +108,23 @@ namespace Sweety
             return sellModelList;
         }
 
-        private static List<MappingModel> ToModel()
+        private static List<MappingModel> ToModel(List<MappingEntity> mappingEntityList)
         {
+            List<MappingModel> mappingModelList = new List<MappingModel>();
 
+            foreach (var mappingEntity in mappingEntityList)
+            {
+                MappingModel mappingModel = new MappingModel();
+
+                mappingModel.Applicant = mappingEntity.Applicant;
+                mappingModel.ContractNo = mappingEntity.ContractNo;
+                mappingModel.GoodsNo = mappingEntity.GoodsNo;
+                mappingModel.GroupCategory = mappingEntity.GroupCategory;
+
+                mappingModelList.Add(mappingModel);
+            }
+
+            return mappingModelList;
         }
 
         private static OutputGroup Process(InputGroup inputGroup)

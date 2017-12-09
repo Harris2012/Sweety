@@ -6,7 +6,7 @@ using System.Text;
 namespace Sweety.InputEntity
 {
     [ExcelTable("商务报表")]
-    class BusinessEntity
+    class MappingEntity
     {
         [ExcelColumn("组别", 9)]
         public string GroupCategory { get; set; }
