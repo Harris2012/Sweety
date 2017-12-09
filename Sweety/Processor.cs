@@ -145,12 +145,12 @@ namespace Sweety
                 return returnValue;
             }
 
-            var sellModelList = inputGroup.MappingModelList;
+            var sellModelList = inputGroup.SellModelList;
             var buyModelList = inputGroup.BuyModelList;
             var mappingModelList = inputGroup.MappingModelList;
 
             //从商务报表中找到“本期销项明细”表中销售合同号对应的货号
-            foreach (var sellModel in inputGroup.SellModelList)
+            foreach (var sellModel in sellModelList)
             {
                 var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo).ToList();
                 if (mappings.Count == 0)
@@ -170,6 +170,7 @@ namespace Sweety
                 sellModel.ProductNo = mapping.ProductNo;
             }
 
+            var items = sellModelList.Where(v => v.IsDone).ToList();
 
             return returnValue;
         }
