@@ -35,6 +35,14 @@ namespace Sweety.Model
         #endregion
 
         #region 中间过程
+        /// <summary>
+        /// 商务报表中的数据库编号
+        /// </summary>
+        public List<string> MappingIds { get; set; }
+
+        /// <summary>
+        /// 货号
+        /// </summary>
         public string ProductNo { get; set; }
         #endregion
     }

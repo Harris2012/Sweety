@@ -115,6 +115,7 @@ namespace Sweety
             {
                 MappingModel mappingModel = new MappingModel();
 
+                mappingModel.Id = mappingEntity.Id;
                 mappingModel.Applicant = mappingEntity.Applicant;
                 mappingModel.ContractNo = mappingEntity.ContractNo;
                 mappingModel.ProductNo = mappingEntity.ProductNo;
@@ -152,27 +153,62 @@ namespace Sweety
             //从商务报表中找到“本期销项明细”表中销售合同号对应的货号
             foreach (var sellModel in sellModelList)
             {
-                var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo).ToList();
-                if (mappings.Count == 0)
-                {
-                    sellModel.IsDone = true;
-                    sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
-                }
-
-                if (mappings.Count > 1)
-                {
-                    sellModel.IsDone = true;
-                    sellModel.Remarks.Add(Remark.FindMultiContractNoInMapping);
-                }
-
-                var mapping = mappings[0];
-
-                sellModel.ProductNo = mapping.ProductNo;
+                //从商务报表中找到对应的货号，填充进去
+                FindMapping(sellModel, mappingModelList);
             }
 
-            var items = sellModelList.Where(v => v.IsDone).ToList();
+            var items = sellModelList.Where(v => string.IsNullOrEmpty(v.ProductNo)).ToList();
 
             return returnValue;
+        }
+
+        /// <summary>
+        /// 从商务报表里面找到比配的记录
+        /// </summary>
+        /// <param name="sellModel"></param>
+        /// <param name="mappingModelList"></param>
+        private static void FindMapping(SellModel sellModel, List<MappingModel> mappingModelList)
+        {
+            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo).ToList();
+
+            if (mappings.Count == 1)
+            {
+                sellModel.ProductNo = mappings[0].ProductNo;
+                return;
+            }
+
+            if (mappings.Count > 1)
+            {
+                sellModel.MappingIds = mappings.Select(v => v.Id).ToList();
+                sellModel.Remarks.Add(Remark.FindMultiContractNoInMapping);
+                return;
+            }
+
+            if (mappings.Count == 0)
+            {
+                sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
+
+                if (sellModel.SellContractNo.EndsWith("-2"))
+                {
+                    var secondContractNo = sellModel.SellContractNo.Substring(0, sellModel.SellContractNo.LastIndexOf("-2"));
+                    var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo).ToList();
+
+                    if (secondMappings.Count == 1)
+                    {
+                        sellModel.ProductNo = secondMappings[0].ProductNo;
+                        sellModel.MappingIds = secondMappings.Select(v => v.Id).ToList();
+                        sellModel.Remarks.Add(Remark.FindOneContractNoInMappingUsingSecondContractId);
+                        return;
+                    }
+
+                    if (secondMappings.Count > 1)
+                    {
+                        sellModel.MappingIds = secondMappings.Select(v => v.Id).ToList();
+                        sellModel.Remarks.Add(Remark.FindMultiContractNoInMappingUsingSecondContractId);
+                        return;
+                    }
+                }
+            }
         }
 
         private static void ToEntity(OutputGroup outputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)

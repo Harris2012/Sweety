@@ -8,18 +8,20 @@ namespace Sweety.Model
 {
     class Remark
     {
-        public int RemarkNo { get; set; }
+        public int RemarkNo { get; private set; }
 
-        public string Message { get; set; }
+        public string Message { get; private set; }
 
         public Remark(int remarkNo, string message)
         {
-
+            this.RemarkNo = remarkNo;
+            this.Message = message;
         }
 
+        public static Remark FindZeroContractNoInMapping = new Remark(2001, "用原始的销售合同号在商务报表中没有找到对应的记录");
+        public static Remark FindMultiContractNoInMapping = new Remark(2002, "用原始的销售合同号在商务报表中找到多条对应的记录");
+        public static Remark FindOneContractNoInMappingUsingSecondContractId = new Remark(2003, "用去掉'-2'之后的销售合同号在商务报表中找到1条对应的记录");
+        public static Remark FindMultiContractNoInMappingUsingSecondContractId = new Remark(2004, "用去掉'-2'之后的销售合同号在商务报表中找到N条对应的记录");
 
-
-        public static Remark FindZeroContractNoInMapping = new Remark(2001, "在商务报表中没有找到对应的销售合同号");
-        public static Remark FindMultiContractNoInMapping = new Remark(2002, "在商务报表中找到多余一个销售合同号");
     }
 }

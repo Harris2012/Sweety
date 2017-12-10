@@ -11,6 +11,11 @@ namespace Sweety.Model
     class MappingModel
     {
         /// <summary>
+        /// 数据库编号
+        /// </summary>
+        public string Id { get; set; }
+
+        /// <summary>
         /// 组别
         /// </summary>
         public string GroupCategory { get; set; }
