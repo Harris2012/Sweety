@@ -262,8 +262,15 @@ namespace Sweety
             {
                 if (buyModelList_ProductNoMatched[0].ReceiveTicketCount == sellModel.ProductCount)
                 {
+                    var buyModel = buyModelList_ProductNoMatched[0];
+
+                    // 设置销项
                     sellModel.SellMode = 1;
-                    buyModelList_ProductNoMatched[0].SellMode = 1;
+                    sellModel.CaiGouContractNo = buyModel.BuyContractNo;
+
+
+                    //设置进项
+                    buyModel.SellMode = 1;
                 }
             }
         }
