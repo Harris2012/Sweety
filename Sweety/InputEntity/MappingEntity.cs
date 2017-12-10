@@ -11,6 +11,9 @@ namespace Sweety.InputEntity
         [ExcelColumn("数据库编号", 1)]
         public string Id { get; set; }
 
+        [ExcelColumn("合同状态", 5)]
+        public string ContractStatus { get; set; }
+
         [ExcelColumn("组别", 9)]
         public string GroupCategory { get; set; }
 

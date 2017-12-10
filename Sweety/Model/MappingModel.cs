@@ -16,6 +16,14 @@ namespace Sweety.Model
         public string Id { get; set; }
 
         /// <summary>
+        /// 合同状态
+        /// 1 - 正常
+        /// 2 - 撤单
+        /// 3 - 还利差
+        /// </summary>
+        public int ContractStatus { get; set; }
+
+        /// <summary>
         /// 组别
         /// </summary>
         public string GroupCategory { get; set; }

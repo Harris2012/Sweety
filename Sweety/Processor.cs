@@ -136,6 +136,28 @@ namespace Sweety
                 mappingModel.ProductNo = mappingEntity.ProductNo;
                 mappingModel.GroupCategory = mappingEntity.GroupCategory;
 
+                //合同状态
+                switch (mappingEntity.ContractStatus)
+                {
+                    case "正常":
+                        {
+                            mappingModel.ContractStatus = 1;
+                        }
+                        break;
+                    case "撤单":
+                        {
+                            mappingModel.ContractStatus = 2;
+                        }
+                        break;
+                    case "撤单-还利差":
+                        {
+                            mappingModel.ContractStatus = 3;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
                 mappingModelList.Add(mappingModel);
             }
 
@@ -184,7 +206,7 @@ namespace Sweety
         /// <param name="mappingModelList"></param>
         private static void FindMapping(SellModel sellModel, List<MappingModel> mappingModelList)
         {
-            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo).ToList();
+            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo && v.ContractStatus == 1).ToList();
 
             if (mappings.Count == 1)
             {
@@ -203,10 +225,10 @@ namespace Sweety
             {
                 sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
 
-                if (sellModel.SellContractNo.EndsWith("-2"))
+                if (sellModel.SellContractNo.Contains("-"))
                 {
-                    var secondContractNo = sellModel.SellContractNo.Substring(0, sellModel.SellContractNo.LastIndexOf("-2"));
-                    var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo).ToList();
+                    var secondContractNo = sellModel.SellContractNo.Substring(0, sellModel.SellContractNo.LastIndexOf("-"));
+                    var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo && v.ContractStatus == 1).ToList();
 
                     if (secondMappings.Count == 1)
                     {
