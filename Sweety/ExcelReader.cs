@@ -99,6 +99,24 @@ namespace Sweety
                                     }
                                 }
                                 break;
+                            case "System.Double":
+                                {
+                                    double doubleValue = 0;
+                                    if (double.TryParse(value, out doubleValue))
+                                    {
+                                        property.SetValue(entity, doubleValue, null);
+                                    }
+                                }
+                                break;
+                            case "System.Decimal":
+                                {
+                                    decimal decimalValue = 0;
+                                    if (decimal.TryParse(value,out decimalValue))
+                                    {
+                                        property.SetValue(entity, decimalValue, null);
+                                    }
+                                }
+                                break;
                             case "System.String":
                                 {
                                     property.SetValue(entity, value, null);

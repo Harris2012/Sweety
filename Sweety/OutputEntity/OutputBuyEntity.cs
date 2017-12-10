@@ -60,31 +60,31 @@ namespace Sweety.OutputEntity
         /// 发票金额
         /// </summary>
         [ExcelColumn("发票金额", 9, ExcelCellFormat = ExcelCellFormat.Number2)]
-        public float FaPiaoJinE { get; set; }
+        public decimal FaPiaoJinE { get; set; }
 
         /// <summary>
         /// 不含税金额
         /// </summary>
-        [ExcelColumn("不含税金额", 10, ExcelCellFormat = ExcelCellFormat.Number2)]
-        public float BuHanShuiJinE { get; set; }
+        [ExcelColumn("不含税金额", 10)]
+        public decimal BuHanShuiJinE { get; set; }
 
         /// <summary>
         /// 税额
         /// </summary>
         [ExcelColumn("税额", 11, ExcelCellFormat = ExcelCellFormat.Number2)]
-        public float TaxMoney { get; set; }
+        public decimal TaxMoney { get; set; }
 
         /// <summary>
         /// 收票吨数
         /// </summary>
         [ExcelColumn("收票吨数", 12)]
-        public float ReceiveTicketCount { get; set; }
+        public double ReceiveTicketCount { get; set; }
 
         /// <summary>
         /// 商品含税单价
         /// </summary>
         [ExcelColumn("商品含税单价", 13)]
-        public float ShangPinHanShuiDanJia { get; set; }
+        public decimal ShangPinHanShuiDanJia { get; set; }
 
         /// <summary>
         /// 类型

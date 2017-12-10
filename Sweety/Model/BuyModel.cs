@@ -59,22 +59,22 @@ namespace Sweety.Model
         /// <summary>
         /// 发票金额
         /// </summary>
-        public float FaPiaoJinE { get; set; }
+        public decimal FaPiaoJinE { get; set; }
 
         /// <summary>
         /// 不含税金额
         /// </summary>
-        public float BuHanShuiJinE { get; set; }
+        public decimal BuHanShuiJinE { get; set; }
 
         /// <summary>
         /// 税额
         /// </summary>
-        public float TaxMoney { get; set; }
+        public decimal TaxMoney { get; set; }
 
         /// <summary>
         /// 收票吨数
         /// </summary>
-        public float ReceiveTicketCount { get; set; }
+        public double ReceiveTicketCount { get; set; }
 
         #region 日志
         public List<Remark> Remarks { get; private set; }
@@ -95,8 +95,8 @@ namespace Sweety.Model
         /// <summary>
         /// 商品含税单价
         /// </summary>
-        public float ShangPinHanShuiDanJia { get; set; }
-        public void SetShangPinHanShuiDanJia(float shangPinHanShuiDanJia)
+        public decimal ShangPinHanShuiDanJia { get; set; }
+        public void SetShangPinHanShuiDanJia(decimal shangPinHanShuiDanJia)
         {
             this.ShangPinHanShuiDanJia = shangPinHanShuiDanJia;
         }

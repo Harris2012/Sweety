@@ -60,25 +60,25 @@ namespace Sweety.InputEntity
         /// 发票金额
         /// </summary>
         [ExcelColumn("发票金额", 9)]
-        public float BillMoney { get; set; }
+        public decimal BillMoney { get; set; }
 
         /// <summary>
         /// 不含税金额
         /// </summary>
         [ExcelColumn("不含税金额", 10)]
-        public float WithoutTaxMoney { get; set; }
+        public decimal WithoutTaxMoney { get; set; }
 
         /// <summary>
         /// 税额
         /// </summary>
         [ExcelColumn("税额", 11)]
-        public float TaxMoney { get; set; }
+        public decimal TaxMoney { get; set; }
 
         /// <summary>
         /// 收票吨数
         /// </summary>
         [ExcelColumn("收票吨数", 12)]
-        public float ReceiveTicketCount { get; set; }
+        public double ReceiveTicketCount { get; set; }
 
     }
 }

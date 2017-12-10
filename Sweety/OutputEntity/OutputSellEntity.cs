@@ -36,19 +36,19 @@ namespace Sweety.OutputEntity
         /// 商品数量
         /// </summary>
         [ExcelColumn("商品数量", 5)]
-        public float ProductCount { get; set; }
+        public double ProductCount { get; set; }
 
         /// <summary>
         /// 商品含税单价
         /// </summary>
         [ExcelColumn("商品含税单价", 6)]
-        public float ShangPinHanShuiDanJia { get; set; }
+        public decimal ShangPinHanShuiDanJia { get; set; }
 
         /// <summary>
         /// 商品含税金额
         /// </summary>
         [ExcelColumn("商品含税金额", 7, ExcelCellFormat = ExcelCellFormat.Number2)]
-        public float ShangPinHanShuiJinE { get; set; }
+        public decimal ShangPinHanShuiJinE { get; set; }
 
         /// <summary>
         /// 发票号
@@ -60,13 +60,13 @@ namespace Sweety.OutputEntity
         /// 进项收票吨数
         /// </summary>
         [ExcelColumn("进项收票吨数", 9)]
-        public float JinXiangShouPiaoDunShu { get; set; }
+        public double JinXiangShouPiaoDunShu { get; set; }
 
         /// <summary>
         /// 库存
         /// </summary>
         [ExcelColumn("库存", 10)]
-        public float KuCun { get; set; }
+        public double KuCun { get; set; }
 
         /// <summary>
         /// 销售类型
@@ -84,13 +84,13 @@ namespace Sweety.OutputEntity
         /// 采购单价
         /// </summary>
         [ExcelColumn("采购单价", 13)]
-        public float CaiGouDanJia { get; set; }
+        public decimal CaiGouDanJia { get; set; }
 
         /// <summary>
         /// 暂估采购总金额
         /// </summary>
         [ExcelColumn("暂估采购总金额", 14)]
-        public float ZanGuCaiGouZongJia { get; set; }
+        public decimal ZanGuCaiGouZongJia { get; set; }
 
         /// <summary>
         /// 采购合同
@@ -102,6 +102,6 @@ namespace Sweety.OutputEntity
         /// 暂估采购不含税金额
         /// </summary>
         [ExcelColumn("暂估采购不含税金额", 16)]
-        public float ZanGuCaiGouBuHanShuiJinE { get; set; }
+        public decimal ZanGuCaiGouBuHanShuiJinE { get; set; }
     }
 }

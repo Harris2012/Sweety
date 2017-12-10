@@ -33,17 +33,17 @@ namespace Sweety.Model
         /// <summary>
         /// 商品数量
         /// </summary>
-        public float ProductCount { get; set; }
+        public double ProductCount { get; set; }
 
         /// <summary>
         /// 商品含税单价
         /// </summary>
-        public float ShangPinHanSuiDanJia { get; set; }
+        public decimal ShangPinHanSuiDanJia { get; set; }
 
         /// <summary>
         /// 商品含税金额
         /// </summary>
-        public float ShangPinHanShuiJinE { get; set; }
+        public decimal ShangPinHanShuiJinE { get; set; }
 
         /// <summary>
         /// 发票号
@@ -96,8 +96,8 @@ namespace Sweety.Model
         /// <summary>
         /// 采购单价
         /// </summary>
-        public float CaiGouDanJia { get; private set; }
-        public void SetCaiGouDanJia(float caiGouDanJia)
+        public decimal CaiGouDanJia { get; private set; }
+        public void SetCaiGouDanJia(decimal caiGouDanJia)
         {
             this.CaiGouDanJia = caiGouDanJia;
         }
@@ -114,8 +114,8 @@ namespace Sweety.Model
         /// <summary>
         /// 暂估采购总价
         /// </summary>
-        public float ZanGuCaiGouZongJia { get; private set; }
-        public void SetZanGuCaiGouZongJia(float zanGuCaiGouZongJia)
+        public decimal ZanGuCaiGouZongJia { get; private set; }
+        public void SetZanGuCaiGouZongJia(decimal zanGuCaiGouZongJia)
         {
             this.ZanGuCaiGouZongJia = zanGuCaiGouZongJia;
         }
@@ -123,8 +123,8 @@ namespace Sweety.Model
         /// <summary>
         /// 暂估采购不含税金额
         /// </summary>
-        public float ZanGuCaiGouBuHanShuiJinE { get; private set; }
-        public void SetZanGuCaiGouBuHanShuiJinE(float zanGuCaiGouBuHanShuiJinE)
+        public decimal ZanGuCaiGouBuHanShuiJinE { get; private set; }
+        public void SetZanGuCaiGouBuHanShuiJinE(decimal zanGuCaiGouBuHanShuiJinE)
         {
             this.ZanGuCaiGouBuHanShuiJinE = zanGuCaiGouBuHanShuiJinE;
         }
@@ -132,8 +132,8 @@ namespace Sweety.Model
         /// <summary>
         /// 库存
         /// </summary>
-        public float KuCun { get; private set; }
-        public void SetKuCun(float kuCun)
+        public double KuCun { get; private set; }
+        public void SetKuCun(double kuCun)
         {
             this.KuCun = kuCun;
         }
@@ -141,8 +141,8 @@ namespace Sweety.Model
         /// <summary>
         /// 进项收票吨数
         /// </summary>
-        public float JinXiangShouPiaoDunShu { get; private set; }
-        public void SetJinXiangShouPiaoDunShu(float jinXiangShouPiaoDunShu)
+        public double JinXiangShouPiaoDunShu { get; private set; }
+        public void SetJinXiangShouPiaoDunShu(double jinXiangShouPiaoDunShu)
         {
             this.JinXiangShouPiaoDunShu = jinXiangShouPiaoDunShu;
         }

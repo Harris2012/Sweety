@@ -30,19 +30,19 @@ namespace Sweety.InputEntity
         /// 商品数量
         /// </summary>
         [ExcelColumn("商品数量", 4)]
-        public float ProductCount { get; set; }
+        public double ProductCount { get; set; }
 
         /// <summary>
         /// 商品含税单价
         /// </summary>
         [ExcelColumn("商品含税单价", 5)]
-        public float ShangPinHanShuiDanJia { get; set; }
+        public decimal ShangPinHanShuiDanJia { get; set; }
 
         /// <summary>
         /// 商品含税金额
         /// </summary>
         [ExcelColumn("商品含税金额", 6)]
-        public float ShangPinHanShuiJinE { get; set; }
+        public decimal ShangPinHanShuiJinE { get; set; }
 
         /// <summary>
         /// 发票号

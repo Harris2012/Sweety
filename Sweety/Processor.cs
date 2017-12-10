@@ -267,7 +267,7 @@ namespace Sweety
                     // 设置销项
                     sellModel.SetSellMode(1);
                     sellModel.SetCaiGouContractNo(buyModel.BuyContractNo);
-                    //sellModel.xiaofa = buyModel.XiaoFangMinCheng;
+                    sellModel.SetCaiGouDanWei(buyModel.XiaoFangMinCheng);
 
 
                     //设置进项
