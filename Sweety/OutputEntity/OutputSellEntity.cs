@@ -8,51 +8,99 @@ namespace Sweety.OutputEntity
     [ExcelTable("本期销项明细")]
     class OutputSellEntity
     {
+        /// <summary>
+        /// 货号
+        /// </summary>
         [ExcelColumn("货号", 1)]
-        public string GoodsNo { get; set; }
+        public string ProductNo { get; set; }
 
+        /// <summary>
+        /// 销售合同号
+        /// </summary>
         [ExcelColumn("销售合同号", 2)]
         public string ContractNo { get; set; }
 
+        /// <summary>
+        /// 购货单位
+        /// </summary>
         [ExcelColumn("购货单位", 3)]
         public string GouHuoDanWei { get; set; }
 
+        /// <summary>
+        /// 商品名称
+        /// </summary>
         [ExcelColumn("商品名称", 4)]
-        public string GoodsName { get; set; }
+        public string ProductName { get; set; }
 
+        /// <summary>
+        /// 商品数量
+        /// </summary>
         [ExcelColumn("商品数量", 5)]
-        public float GoodsCount { get; set; }
+        public float ProductCount { get; set; }
 
+        /// <summary>
+        /// 商品含税单价
+        /// </summary>
         [ExcelColumn("商品含税单价", 6)]
-        public float GoodsUnitMoney { get; set; }
+        public float ShangPinHanShuiDanJia { get; set; }
 
+        /// <summary>
+        /// 商品含税金额
+        /// </summary>
         [ExcelColumn("商品含税金额", 7)]
-        public float GoodsTaxTotalMoney { get; set; }
+        public float ShangPinHanShuiJinE { get; set; }
 
+        /// <summary>
+        /// 发票号
+        /// </summary>
         [ExcelColumn("发票号", 8)]
-        public string BillingNo { get; set; }
+        public string FaPiaoHao { get; set; }
 
+        /// <summary>
+        /// 进项收票吨数
+        /// </summary>
         [ExcelColumn("进项收票吨数", 9)]
         public double BuyCount { get; set; }
 
+        /// <summary>
+        /// 库存
+        /// </summary>
         [ExcelColumn("库存", 10)]
         public double RemainCount { get; set; }
 
+        /// <summary>
+        /// 销售类型
+        /// </summary>
         [ExcelColumn("销售类型", 11)]
         public string SaleMode { get; set; }
 
+        /// <summary>
+        /// 采购单位
+        /// </summary>
         [ExcelColumn("采购单位", 12)]
         public string CaiGouDanWei { get; set; }
 
+        /// <summary>
+        /// 采购单价
+        /// </summary>
         [ExcelColumn("采购单价", 13)]
-        public float CaiGouUnitMoney { get; set; }
+        public float CaiGouDanJia { get; set; }
 
+        /// <summary>
+        /// 暂估采购总金额
+        /// </summary>
         [ExcelColumn("暂估采购总金额", 14)]
         public float ZanGuCaiGouTotalMoney { get; set; }
 
+        /// <summary>
+        /// 采购合同
+        /// </summary>
         [ExcelColumn("采购合同", 15)]
         public string CaiGouContract { get; set; }
 
+        /// <summary>
+        /// 暂估采购不含税金额
+        /// </summary>
         [ExcelColumn("暂估采购不含税金额", 16)]
         public float ZanGuCaiGouNoTaxTotalMoney { get; set; }
     }

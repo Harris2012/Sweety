@@ -90,7 +90,6 @@
     <Compile Include="Model\BuyModel.cs" />
     <Compile Include="Model\InputGroup.cs" />
     <Compile Include="Model\MappingModel.cs" />
-    <Compile Include="Model\OutputGroup.cs" />
     <Compile Include="Model\Remark.cs" />
     <Compile Include="Model\SellModel.cs" />
     <Compile Include="OutputEntity\OutputBuyEntity.cs" />

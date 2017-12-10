@@ -15,13 +15,40 @@ namespace Sweety.Model
             Remarks = new List<Remark>();
         }
 
+        /// <summary>
+        /// 销售合同号
+        /// </summary>
         public string SellContractNo { get; set; }
-        public string BuProductOrganization { get; set; }
+
+        /// <summary>
+        /// 购货单位
+        /// </summary>
+        public string CaiGouDanWei { get; set; }
+
+        /// <summary>
+        /// 商品名称
+        /// </summary>
         public string ProductName { get; set; }
+
+        /// <summary>
+        /// 商品数量
+        /// </summary>
         public float ProductCount { get; set; }
-        public float ProductUnitPriceWithTax { get; set; }
-        public float ProductMoneyWithTax { get; set; }
-        public string BillNo { get; set; }
+
+        /// <summary>
+        /// 商品含税单价
+        /// </summary>
+        public float ShangPinHanSuiDanJia { get; set; }
+
+        /// <summary>
+        /// 商品含税金额
+        /// </summary>
+        public float ShangPinHanShuiJinE { get; set; }
+
+        /// <summary>
+        /// 发票号
+        /// </summary>
+        public string FaPiaoHao { get; set; }
 
         #region 日志
         public List<Remark> Remarks { get; private set; }
@@ -43,7 +70,7 @@ namespace Sweety.Model
         /// <summary>
         /// 1. 直运
         /// </summary>
-        public int SellStatus { get; set; }
+        public int SellMode { get; set; }
         #endregion
     }
 }

@@ -30,13 +30,13 @@ namespace Sweety.InputEntity
         /// Number
         /// </summary>
         [ExcelColumn("编号", 4)]
-        public string Number { get; set; }
+        public string BianHao { get; set; }
 
         /// <summary>
         /// 销方名称
         /// </summary>
         [ExcelColumn("销方名称", 5)]
-        public string 销方名称 { get; set; }
+        public string XiaoFangMinCheng { get; set; }
 
         /// <summary>
         /// 商品名称
@@ -48,7 +48,7 @@ namespace Sweety.InputEntity
         /// 组别
         /// </summary>
         [ExcelColumn("组别", 7)]
-        public string 组别 { get; set; }
+        public string ZuBie { get; set; }
 
         /// <summary>
         /// 收票号码

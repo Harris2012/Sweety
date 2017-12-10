@@ -18,12 +18,12 @@ namespace Sweety
 
             InputGroup inputGroup = ToInputGroup(buyEntityList, sellEntityList, mappingEntityList);
 
-            OutputGroup outputGroup = Process(inputGroup);
+            Process(inputGroup);
 
             List<OutputBuyEntity> outputBuyEntityList = new List<OutputBuyEntity>();
             List<OutputSellEntity> outputSellEntityList = new List<OutputSellEntity>();
 
-            ToEntity(outputGroup, outputBuyEntityList, outputSellEntityList);
+            ToEntity(inputGroup, outputBuyEntityList, outputSellEntityList);
 
             ExcelHelper.WriteToExcel(outputFilePath, outputBuyEntityList);
             ExcelHelper.WriteToExcel(outputFilePath, outputSellEntityList);
@@ -74,13 +74,13 @@ namespace Sweety
                 buyModel.Id = buyEntity.Id;
                 buyModel.ProductNo = buyEntity.ProductNo;
                 buyModel.BuyContractNo = buyEntity.BuyContractNo;
-                buyModel.Number = buyEntity.Number;
-                buyModel.销方名称 = buyEntity.销方名称;
+                buyModel.BianHao = buyEntity.BianHao;
+                buyModel.XiaoFangMinCheng = buyEntity.XiaoFangMinCheng;
                 buyModel.ProductName = buyEntity.ProductName;
-                buyModel.组别 = buyEntity.组别;
-                buyModel.BillNo = buyEntity.BillNo;
-                buyModel.BillMoney = buyEntity.BillMoney;
-                buyModel.WithoutTaxMoney = buyEntity.WithoutTaxMoney;
+                buyModel.ZuBie = buyEntity.ZuBie;
+                buyModel.ShouPiaoHaoMa = buyEntity.BillNo;
+                buyModel.FaPiaoJinE = buyEntity.BillMoney;
+                buyModel.BuHanShuiJinE = buyEntity.WithoutTaxMoney;
                 buyModel.TaxMoney = buyEntity.TaxMoney;
                 buyModel.ReceiveTicketCount = buyEntity.ReceiveTicketCount;
 
@@ -104,12 +104,12 @@ namespace Sweety
                 SellModel sellModel = new SellModel();
 
                 sellModel.SellContractNo = sellEntity.SellContractNo;
-                sellModel.BuProductOrganization = sellEntity.BuProductOrganization;
+                sellModel.CaiGouDanWei = sellEntity.GouHuoDanWei;
                 sellModel.ProductName = sellEntity.ProductName;
                 sellModel.ProductCount = sellEntity.ProductCount;
-                sellModel.ProductUnitPriceWithTax = sellEntity.ProductUnitPriceWithTax;
-                sellModel.ProductMoneyWithTax = sellEntity.ProductMoneyWithTax;
-                sellModel.BillNo = sellEntity.BillNo;
+                sellModel.ShangPinHanSuiDanJia = sellEntity.ShangPinHanShuiDanJia;
+                sellModel.ShangPinHanShuiJinE = sellEntity.ShangPinHanShuiJinE;
+                sellModel.FaPiaoHao = sellEntity.FaPiaoHao;
 
                 sellModelList.Add(sellModel);
             }
@@ -164,23 +164,21 @@ namespace Sweety
             return mappingModelList;
         }
 
-        private static OutputGroup Process(InputGroup inputGroup)
+        private static void Process(InputGroup inputGroup)
         {
-            OutputGroup returnValue = new OutputGroup();
-
             if (inputGroup.BuyModelList == null || inputGroup.BuyModelList.Count == 0)
             {
-                return returnValue;
+                return;
             }
 
             if (inputGroup.SellModelList == null || inputGroup.SellModelList.Count == 0)
             {
-                return returnValue;
+                return;
             }
 
             if (inputGroup.MappingModelList == null || inputGroup.MappingModelList.Count == 0)
             {
-                return returnValue;
+                return;
             }
 
             var sellModelList = inputGroup.SellModelList;
@@ -200,8 +198,6 @@ namespace Sweety
             {
                 FindDirectBusiness(sellModel, buyModelList);
             }
-
-            return returnValue;
         }
 
         /// <summary>
@@ -266,15 +262,79 @@ namespace Sweety
             {
                 if (buyModelList_ProductNoMatched[0].ReceiveTicketCount == sellModel.ProductCount)
                 {
-                    sellModel.SellStatus = 1;
-                    buyModelList_ProductNoMatched[0].SellStatus = 1;
+                    sellModel.SellMode = 1;
+                    buyModelList_ProductNoMatched[0].SellMode = 1;
                 }
             }
         }
 
-        private static void ToEntity(OutputGroup outputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)
+        private static void ToEntity(InputGroup inputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)
         {
-            
+            //本期销项明细
+            if (inputGroup.SellModelList != null && inputGroup.SellModelList.Count > 0)
+            {
+                foreach (var sellModel in inputGroup.SellModelList)
+                {
+                    OutputSellEntity sellEntity = new OutputSellEntity();
+
+                    sellEntity.ProductNo = sellModel.ProductNo;
+                    sellEntity.ContractNo = sellModel.SellContractNo;
+                    sellEntity.GouHuoDanWei = sellModel.CaiGouDanWei;
+                    sellEntity.ProductName = sellModel.ProductName;
+                    sellEntity.ProductCount = sellModel.ProductCount;
+                    sellEntity.ShangPinHanShuiDanJia = sellModel.ShangPinHanSuiDanJia;
+                    sellEntity.ShangPinHanShuiJinE = sellModel.ShangPinHanShuiJinE;
+                    sellEntity.FaPiaoHao = sellModel.FaPiaoHao;
+                    sellEntity.BuyCount = sellModel.ProductCount;
+                    //sellEntity.RemainCount = sellModel.RemainCount;
+                    sellEntity.SaleMode = ToSellMode(sellModel.SellMode);
+                    sellEntity.CaiGouDanWei = sellModel.CaiGouDanWei;
+                    //sellEntity.CaiGouDanJia = sellModel.CaiGouUnitMoney;
+                    //sellEntity.ZanGuCaiGouTotalMoney = sellModel.ZanGuCaiGouTotalMoney;
+                    sellEntity.CaiGouContract = sellModel.SellContractNo;
+                    //sellEntity.ZanGuCaiGouNoTaxTotalMoney = sellModel.ZanGuCaiGouNoTaxTotalMoney;
+
+                    outputSellEntityList.Add(sellEntity);
+                }
+            }
+
+            //本期进项明细
+            if (inputGroup.BuyModelList != null && inputGroup.BuyModelList.Count > 0)
+            {
+                foreach (var buyModel in inputGroup.BuyModelList)
+                {
+                    OutputBuyEntity buyEntity = new OutputBuyEntity();
+
+                    buyEntity.Id = buyModel.Id;
+                    buyEntity.GoodsNo = buyModel.ProductNo;
+                    buyEntity.CaiGouContractNo = buyModel.BuyContractNo;
+                    buyEntity.BianHao = buyModel.BianHao;
+                    buyEntity.XiaoFangMinCheng = buyModel.XiaoFangMinCheng;
+                    buyEntity.ProductName = buyModel.ProductName;
+                    buyEntity.ZuBie = buyModel.ZuBie;
+                    buyEntity.ShouPiaoHaoMa = buyModel.ShouPiaoHaoMa;
+                    buyEntity.FaPiaoJinE = buyModel.FaPiaoJinE;
+                    buyEntity.BuHanShuiJinE = buyModel.BuHanShuiJinE;
+                    buyEntity.TaxMoney = buyModel.TaxMoney;
+                    buyEntity.ReceiveTicketCount = buyModel.ReceiveTicketCount;
+                    buyEntity.ShangPinHanShuiDanJia = buyModel.ShangPinHanShuiDanJia;
+                    buyEntity.SellMode = ToSellMode(buyModel.SellMode);
+
+
+                    outputBuyEntityList.Add(buyEntity);
+                }
+            }
+        }
+
+        private static string ToSellMode(int sellStatus)
+        {
+            switch (sellStatus)
+            {
+                case 1:
+                    return "直运";
+                default:
+                    return null;
+            }
         }
     }
 }

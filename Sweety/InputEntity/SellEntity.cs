@@ -8,26 +8,47 @@ namespace Sweety.InputEntity
     [ExcelTable("本期销项明细")]
     class SellEntity
     {
+        /// <summary>
+        /// 销售合同号
+        /// </summary>
         [ExcelColumn("销售合同号", 1)]
         public string SellContractNo { get; set; }
 
+        /// <summary>
+        /// 购货单位
+        /// </summary>
         [ExcelColumn("购货单位", 2)]
-        public string BuProductOrganization { get; set; }
+        public string GouHuoDanWei { get; set; }
 
+        /// <summary>
+        /// 商品名称
+        /// </summary>
         [ExcelColumn("商品名称", 3)]
         public string ProductName { get; set; }
 
+        /// <summary>
+        /// 商品数量
+        /// </summary>
         [ExcelColumn("商品数量", 4)]
         public float ProductCount { get; set; }
 
+        /// <summary>
+        /// 商品含税单价
+        /// </summary>
         [ExcelColumn("商品含税单价", 5)]
-        public float ProductUnitPriceWithTax { get; set; }
+        public float ShangPinHanShuiDanJia { get; set; }
 
+        /// <summary>
+        /// 商品含税金额
+        /// </summary>
         [ExcelColumn("商品含税金额", 6)]
-        public float ProductMoneyWithTax { get; set; }
+        public float ShangPinHanShuiJinE { get; set; }
 
+        /// <summary>
+        /// 发票号
+        /// </summary>
         [ExcelColumn("发票号", 7)]
-        public string BillNo { get; set; }
+        public string FaPiaoHao { get; set; }
 
     }
 }
