@@ -77,14 +77,16 @@ namespace Sweety.Model
         public float ReceiveTicketCount { get; set; }
 
         #region 日志
-        /// <summary>
-        /// 本条数据是否已经处理完成
-        /// </summary>
-        public bool IsDone { get; set; }
-
         public List<Remark> Remarks { get; private set; }
 
         public List<string> Messages { get; private set; }
+        #endregion
+
+        #region 中间过程变量
+        /// <summary>
+        /// 1. 直运
+        /// </summary>
+        public int SellStatus { get; set; }
         #endregion
     }
 }

@@ -187,14 +187,19 @@ namespace Sweety
             var buyModelList = inputGroup.BuyModelList;
             var mappingModelList = inputGroup.MappingModelList;
 
-            //从商务报表中找到“本期销项明细”表中销售合同号对应的货号
+            // Step 1. 从商务报表中找到“本期销项明细”表中销售合同号对应的货号，填充到本期销项明细表中
             foreach (var sellModel in sellModelList)
             {
-                //从商务报表中找到对应的货号，填充进去
                 FindMapping(sellModel, mappingModelList);
             }
 
-            var items = sellModelList.Where(v => string.IsNullOrEmpty(v.ProductNo)).ToList();
+            //有货号的本期销项明细表
+            var sellModelWithProductNoList = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo)).ToList();
+            // Step 2. 查找直运
+            foreach (var sellModel in sellModelWithProductNoList)
+            {
+                FindDirectBusiness(sellModel, buyModelList);
+            }
 
             return returnValue;
         }
@@ -248,9 +253,28 @@ namespace Sweety
             }
         }
 
+        /// <summary>
+        /// 在本期销项明细表和本期进项明细表中找到直运的记录
+        /// </summary>
+        /// <param name="sellModel"></param>
+        /// <param name="buyModelList"></param>
+        private static void FindDirectBusiness(SellModel sellModel, List<BuyModel> buyModelList)
+        {
+            var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo)).ToList();
+
+            if (buyModelList_ProductNoMatched.Count == 1)
+            {
+                if (buyModelList_ProductNoMatched[0].ReceiveTicketCount == sellModel.ProductCount)
+                {
+                    sellModel.SellStatus = 1;
+                    buyModelList_ProductNoMatched[0].SellStatus = 1;
+                }
+            }
+        }
+
         private static void ToEntity(OutputGroup outputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)
         {
-
+            
         }
     }
 }

@@ -24,11 +24,6 @@ namespace Sweety.Model
         public string BillNo { get; set; }
 
         #region 日志
-        /// <summary>
-        /// 本条数据是否已经处理完成
-        /// </summary>
-        public bool IsDone { get; set; }
-
         public List<Remark> Remarks { get; private set; }
 
         public List<string> Messages { get; set; }
@@ -44,6 +39,11 @@ namespace Sweety.Model
         /// 货号
         /// </summary>
         public string ProductNo { get; set; }
+
+        /// <summary>
+        /// 1. 直运
+        /// </summary>
+        public int SellStatus { get; set; }
         #endregion
     }
 }
