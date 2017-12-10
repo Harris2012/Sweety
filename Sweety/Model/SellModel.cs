@@ -23,7 +23,7 @@ namespace Sweety.Model
         /// <summary>
         /// 购货单位
         /// </summary>
-        public string CaiGouDanWei { get; set; }
+        public string GouHuoDanWei { get; set; }
 
         /// <summary>
         /// 商品名称
@@ -60,52 +60,92 @@ namespace Sweety.Model
         /// <summary>
         /// 商务报表中的数据库编号
         /// </summary>
-        public List<string> MappingIds { get; set; }
+        public List<string> MappingIds { get; private set; }
+        public void SetMappingIds(List<string> mappingIds)
+        {
+            this.MappingIds = mappingIds;
+        }
 
         /// <summary>
         /// 货号
         /// </summary>
-        public string ProductNo { get; set; }
+        public string ProductNo { get; private set; }
+        public void SetProductNo(string productNo)
+        {
+            this.ProductNo = productNo;
+        }
 
         /// <summary>
         /// 1. 直运
         /// </summary>
-        public int SellMode { get; set; }
-
-        /// <summary>
-        /// 购货单位
-        /// </summary>
-        public string GouHuoDanWei { get; set; }
+        public int SellMode { get; private set; }
+        public void SetSellMode(int sellMode)
+        {
+            this.SellMode = sellMode;
+        }
 
         /// <summary>
         /// 采购合同号
         /// </summary>
-        public string CaiGouContractNo { get; set; }
+        public string CaiGouContractNo { get; private set; }
+        public void SetCaiGouContractNo(string caiGouContractNo)
+        {
+            this.CaiGouContractNo = caiGouContractNo;
+        }
 
         /// <summary>
         /// 采购单价
         /// </summary>
-        public float CaiGouDanJia { get; set; }
+        public float CaiGouDanJia { get; private set; }
+        public void SetCaiGouDanJia(float caiGouDanJia)
+        {
+            this.CaiGouDanJia = caiGouDanJia;
+        }
+
+        /// <summary>
+        /// 采购单位
+        /// </summary>
+        public string CaiGouDanWei { get; set; }
+        public void SetCaiGouDanWei(string caiGouDanWei)
+        {
+            this.CaiGouDanWei = caiGouDanWei;
+        }
 
         /// <summary>
         /// 暂估采购总价
         /// </summary>
-        public float ZanGuCaiGouZongJia { get; internal set; }
+        public float ZanGuCaiGouZongJia { get; private set; }
+        public void SetZanGuCaiGouZongJia(float zanGuCaiGouZongJia)
+        {
+            this.ZanGuCaiGouZongJia = zanGuCaiGouZongJia;
+        }
 
         /// <summary>
         /// 暂估采购不含税金额
         /// </summary>
-        public float ZanGuCaiGouBuHanShuiJinE { get; internal set; }
+        public float ZanGuCaiGouBuHanShuiJinE { get; private set; }
+        public void SetZanGuCaiGouBuHanShuiJinE(float zanGuCaiGouBuHanShuiJinE)
+        {
+            this.ZanGuCaiGouBuHanShuiJinE = zanGuCaiGouBuHanShuiJinE;
+        }
 
         /// <summary>
         /// 库存
         /// </summary>
-        public float KuCun { get; internal set; }
+        public float KuCun { get; private set; }
+        public void SetKuCun(float kuCun)
+        {
+            this.KuCun = kuCun;
+        }
 
         /// <summary>
         /// 进项收票吨数
         /// </summary>
-        public double JinXiangShouPiaoDunShu { get; internal set; }
+        public float JinXiangShouPiaoDunShu { get; private set; }
+        public void SetJinXiangShouPiaoDunShu(float jinXiangShouPiaoDunShu)
+        {
+            this.JinXiangShouPiaoDunShu = jinXiangShouPiaoDunShu;
+        }
         #endregion
     }
 }

@@ -60,7 +60,7 @@ namespace Sweety.OutputEntity
         /// 进项收票吨数
         /// </summary>
         [ExcelColumn("进项收票吨数", 9)]
-        public double JinXiangShouPiaoDunShu { get; set; }
+        public float JinXiangShouPiaoDunShu { get; set; }
 
         /// <summary>
         /// 库存

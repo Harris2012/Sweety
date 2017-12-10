@@ -86,12 +86,20 @@ namespace Sweety.Model
         /// <summary>
         /// 1. 直运
         /// </summary>
-        public int SellMode { get; set; }
+        public int SellMode { get; private set; }
+        public void SetSellMode(int sellMode)
+        {
+            this.SellMode = sellMode;
+        }
 
         /// <summary>
         /// 商品含税单价
         /// </summary>
         public float ShangPinHanShuiDanJia { get; set; }
+        public void SetShangPinHanShuiDanJia(float shangPinHanShuiDanJia)
+        {
+            this.ShangPinHanShuiDanJia = shangPinHanShuiDanJia;
+        }
         #endregion
     }
 }
