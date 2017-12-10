@@ -59,19 +59,19 @@ namespace Sweety.OutputEntity
         /// <summary>
         /// 发票金额
         /// </summary>
-        [ExcelColumn("发票金额", 9)]
+        [ExcelColumn("发票金额", 9, ExcelCellFormat = ExcelCellFormat.Number2)]
         public float FaPiaoJinE { get; set; }
 
         /// <summary>
         /// 不含税金额
         /// </summary>
-        [ExcelColumn("不含税金额", 10)]
+        [ExcelColumn("不含税金额", 10, ExcelCellFormat = ExcelCellFormat.Number2)]
         public float BuHanShuiJinE { get; set; }
 
         /// <summary>
         /// 税额
         /// </summary>
-        [ExcelColumn("税额", 11)]
+        [ExcelColumn("税额", 11, ExcelCellFormat = ExcelCellFormat.Number2)]
         public float TaxMoney { get; set; }
 
         /// <summary>

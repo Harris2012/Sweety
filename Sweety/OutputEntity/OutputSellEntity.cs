@@ -18,7 +18,7 @@ namespace Sweety.OutputEntity
         /// 销售合同号
         /// </summary>
         [ExcelColumn("销售合同号", 2)]
-        public string ContractNo { get; set; }
+        public string XiaoShouContractNo { get; set; }
 
         /// <summary>
         /// 购货单位
@@ -47,7 +47,7 @@ namespace Sweety.OutputEntity
         /// <summary>
         /// 商品含税金额
         /// </summary>
-        [ExcelColumn("商品含税金额", 7)]
+        [ExcelColumn("商品含税金额", 7, ExcelCellFormat = ExcelCellFormat.Number2)]
         public float ShangPinHanShuiJinE { get; set; }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace Sweety.OutputEntity
         /// 进项收票吨数
         /// </summary>
         [ExcelColumn("进项收票吨数", 9)]
-        public double BuyCount { get; set; }
+        public double JinXiangShouPiaoDunShu { get; set; }
 
         /// <summary>
         /// 库存
@@ -96,7 +96,7 @@ namespace Sweety.OutputEntity
         /// 采购合同
         /// </summary>
         [ExcelColumn("采购合同", 15)]
-        public string CaiGouContract { get; set; }
+        public string CaiGouContractNo { get; set; }
 
         /// <summary>
         /// 暂估采购不含税金额

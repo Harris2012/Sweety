@@ -103,8 +103,8 @@ namespace Sweety
 
                 SellModel sellModel = new SellModel();
 
-                sellModel.SellContractNo = sellEntity.SellContractNo;
-                sellModel.CaiGouDanWei = sellEntity.GouHuoDanWei;
+                sellModel.XiaoShouContractNo = sellEntity.SellContractNo;
+                sellModel.GouHuoDanWei = sellEntity.GouHuoDanWei;
                 sellModel.ProductName = sellEntity.ProductName;
                 sellModel.ProductCount = sellEntity.ProductCount;
                 sellModel.ShangPinHanSuiDanJia = sellEntity.ShangPinHanShuiDanJia;
@@ -207,7 +207,7 @@ namespace Sweety
         /// <param name="mappingModelList"></param>
         private static void FindMapping(SellModel sellModel, List<MappingModel> mappingModelList)
         {
-            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.SellContractNo && v.ContractStatus == 1).ToList();
+            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.XiaoShouContractNo && v.ContractStatus == 1).ToList();
 
             if (mappings.Count == 1)
             {
@@ -226,9 +226,9 @@ namespace Sweety
             {
                 sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
 
-                if (sellModel.SellContractNo.Contains("-"))
+                if (sellModel.XiaoShouContractNo.Contains("-"))
                 {
-                    var secondContractNo = sellModel.SellContractNo.Substring(0, sellModel.SellContractNo.LastIndexOf("-"));
+                    var secondContractNo = sellModel.XiaoShouContractNo.Substring(0, sellModel.XiaoShouContractNo.LastIndexOf("-"));
                     var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo && v.ContractStatus == 1).ToList();
 
                     if (secondMappings.Count == 1)
@@ -278,20 +278,20 @@ namespace Sweety
                     OutputSellEntity sellEntity = new OutputSellEntity();
 
                     sellEntity.ProductNo = sellModel.ProductNo;
-                    sellEntity.ContractNo = sellModel.SellContractNo;
-                    sellEntity.GouHuoDanWei = sellModel.CaiGouDanWei;
+                    sellEntity.XiaoShouContractNo = sellModel.XiaoShouContractNo;
+                    sellEntity.GouHuoDanWei = sellModel.GouHuoDanWei;
                     sellEntity.ProductName = sellModel.ProductName;
                     sellEntity.ProductCount = sellModel.ProductCount;
                     sellEntity.ShangPinHanShuiDanJia = sellModel.ShangPinHanSuiDanJia;
                     sellEntity.ShangPinHanShuiJinE = sellModel.ShangPinHanShuiJinE;
                     sellEntity.FaPiaoHao = sellModel.FaPiaoHao;
-                    sellEntity.BuyCount = sellModel.ProductCount;
+                    //sellEntity.JinXiangShouPiaoDunShu = sellModel.ProductCount;
                     //sellEntity.RemainCount = sellModel.RemainCount;
                     sellEntity.SaleMode = ToSellMode(sellModel.SellMode);
                     sellEntity.CaiGouDanWei = sellModel.CaiGouDanWei;
                     //sellEntity.CaiGouDanJia = sellModel.CaiGouUnitMoney;
                     //sellEntity.ZanGuCaiGouTotalMoney = sellModel.ZanGuCaiGouTotalMoney;
-                    sellEntity.CaiGouContract = sellModel.SellContractNo;
+                    //sellEntity.CaiGouContractNo = sellModel.CaiGouContractNo;
                     //sellEntity.ZanGuCaiGouNoTaxTotalMoney = sellModel.ZanGuCaiGouNoTaxTotalMoney;
 
                     outputSellEntityList.Add(sellEntity);

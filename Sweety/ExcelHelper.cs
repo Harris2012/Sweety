@@ -160,11 +160,30 @@ namespace Sweety
                 for (int row = 0; row < entityList.Count; row++)
                 {
                     Excel.Range valueCellRange = range[row + 2, columnAttribute.ColumnIndex];
-                    switch (property.PropertyType.ToString())
+                    switch (columnAttribute.ExcelCellFormat)
                     {
-                        case "System.String":
+                        case ExcelCellFormat.Default:
+                            {
+                                switch (property.PropertyType.ToString())
+                                {
+                                    case "System.String":
+                                        {
+                                            valueCellRange.NumberFormatLocal = "@";
+                                        }
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            break;
+                        case ExcelCellFormat.Text:
                             {
                                 valueCellRange.NumberFormatLocal = "@";
+                            }
+                            break;
+                        case ExcelCellFormat.Number2:
+                            {
+                                valueCellRange.NumberFormatLocal = "_ * #,##0.00_ ;_ * -#,##0.00_ ;_ * \"-\"??_ ;_ @_ ";
                             }
                             break;
                         default:

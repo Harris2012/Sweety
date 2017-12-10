@@ -76,6 +76,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="attribute\ExcelCellFormat.cs" />
     <Compile Include="attribute\ExcelColumnAttribute.cs" />
     <Compile Include="attribute\ExcelTableAttribute.cs" />
     <Compile Include="ColumnInfo.cs" />

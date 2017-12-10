@@ -18,7 +18,7 @@ namespace Sweety.Model
         /// <summary>
         /// 销售合同号
         /// </summary>
-        public string SellContractNo { get; set; }
+        public string XiaoShouContractNo { get; set; }
 
         /// <summary>
         /// 购货单位
@@ -71,6 +71,11 @@ namespace Sweety.Model
         /// 1. 直运
         /// </summary>
         public int SellMode { get; set; }
+
+        /// <summary>
+        /// 购货单位
+        /// </summary>
+        public string GouHuoDanWei { get; set; }
         #endregion
     }
 }

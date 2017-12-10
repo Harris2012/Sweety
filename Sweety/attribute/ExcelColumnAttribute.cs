@@ -22,5 +22,10 @@ namespace Sweety
             this.Name = name;
             this.ColumnIndex = columnIndex;
         }
+
+        /// <summary>
+        /// 单元格格式
+        /// </summary>
+        public ExcelCellFormat ExcelCellFormat { get; set; }
     }
 }
