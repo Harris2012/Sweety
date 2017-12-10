@@ -116,7 +116,17 @@ namespace Sweety
             }
 
             Excel.Application app = GetApplication();
-            Excel.Workbook book = app.Workbooks.Add();
+
+            Excel.Workbook book;
+            if (System.IO.File.Exists(excelFilePath))
+            {
+                book = app.Workbooks.Open(excelFilePath);
+            }
+            else
+            {
+                book = app.Workbooks.Add();
+                book.SaveAs(excelFilePath);
+            }
 
             for (int sheetIndex = 1; sheetIndex <= book.Sheets.Count; sheetIndex++)
             {
@@ -150,10 +160,21 @@ namespace Sweety
                 for (int row = 0; row < entityList.Count; row++)
                 {
                     Excel.Range valueCellRange = range[row + 2, columnAttribute.ColumnIndex];
+                    switch (property.PropertyType.ToString())
+                    {
+                        case "System.String":
+                            {
+                                valueCellRange.NumberFormatLocal = "@";
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
                     valueCellRange.Value = property.GetValue(entityList[row], null);
                 }
             }
-            book.SaveAs(excelFilePath);
+            book.Save();
             book.Close();
             app.Quit();
         }
