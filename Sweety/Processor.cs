@@ -64,6 +64,11 @@ namespace Sweety
 
             foreach (var buyEntity in buyEntityList)
             {
+                if (string.IsNullOrEmpty(buyEntity.Id))
+                {
+                    continue;
+                }
+
                 BuyModel buyModel = new BuyModel();
 
                 buyModel.Id = buyEntity.Id;
@@ -91,6 +96,11 @@ namespace Sweety
 
             foreach (var sellEntity in sellEntityList)
             {
+                if (string.IsNullOrEmpty(sellEntity.SellContractNo))
+                {
+                    continue;
+                }
+
                 SellModel sellModel = new SellModel();
 
                 sellModel.SellContractNo = sellEntity.SellContractNo;
@@ -113,6 +123,11 @@ namespace Sweety
 
             foreach (var mappingEntity in mappingEntityList)
             {
+                if (string.IsNullOrEmpty(mappingEntity.Id))
+                {
+                    continue;
+                }
+
                 MappingModel mappingModel = new MappingModel();
 
                 mappingModel.Id = mappingEntity.Id;
