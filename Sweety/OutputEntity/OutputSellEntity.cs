@@ -66,7 +66,7 @@ namespace Sweety.OutputEntity
         /// 库存
         /// </summary>
         [ExcelColumn("库存", 10)]
-        public double RemainCount { get; set; }
+        public float KuCun { get; set; }
 
         /// <summary>
         /// 销售类型
@@ -90,7 +90,7 @@ namespace Sweety.OutputEntity
         /// 暂估采购总金额
         /// </summary>
         [ExcelColumn("暂估采购总金额", 14)]
-        public float ZanGuCaiGouTotalMoney { get; set; }
+        public float ZanGuCaiGouZongJia { get; set; }
 
         /// <summary>
         /// 采购合同
@@ -102,6 +102,6 @@ namespace Sweety.OutputEntity
         /// 暂估采购不含税金额
         /// </summary>
         [ExcelColumn("暂估采购不含税金额", 16)]
-        public float ZanGuCaiGouNoTaxTotalMoney { get; set; }
+        public float ZanGuCaiGouBuHanShuiJinE { get; set; }
     }
 }

@@ -76,6 +76,36 @@ namespace Sweety.Model
         /// 购货单位
         /// </summary>
         public string GouHuoDanWei { get; set; }
+
+        /// <summary>
+        /// 采购合同号
+        /// </summary>
+        public string CaiGouContractNo { get; set; }
+
+        /// <summary>
+        /// 采购单价
+        /// </summary>
+        public float CaiGouDanJia { get; set; }
+
+        /// <summary>
+        /// 暂估采购总价
+        /// </summary>
+        public float ZanGuCaiGouZongJia { get; internal set; }
+
+        /// <summary>
+        /// 暂估采购不含税金额
+        /// </summary>
+        public float ZanGuCaiGouBuHanShuiJinE { get; internal set; }
+
+        /// <summary>
+        /// 库存
+        /// </summary>
+        public float KuCun { get; internal set; }
+
+        /// <summary>
+        /// 进项收票吨数
+        /// </summary>
+        public double JinXiangShouPiaoDunShu { get; internal set; }
         #endregion
     }
 }

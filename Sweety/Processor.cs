@@ -285,14 +285,14 @@ namespace Sweety
                     sellEntity.ShangPinHanShuiDanJia = sellModel.ShangPinHanSuiDanJia;
                     sellEntity.ShangPinHanShuiJinE = sellModel.ShangPinHanShuiJinE;
                     sellEntity.FaPiaoHao = sellModel.FaPiaoHao;
-                    //sellEntity.JinXiangShouPiaoDunShu = sellModel.ProductCount;
-                    //sellEntity.RemainCount = sellModel.RemainCount;
+                    sellEntity.JinXiangShouPiaoDunShu = sellModel.JinXiangShouPiaoDunShu;
+                    sellEntity.KuCun = sellModel.KuCun;
                     sellEntity.SaleMode = ToSellMode(sellModel.SellMode);
                     sellEntity.CaiGouDanWei = sellModel.CaiGouDanWei;
-                    //sellEntity.CaiGouDanJia = sellModel.CaiGouUnitMoney;
-                    //sellEntity.ZanGuCaiGouTotalMoney = sellModel.ZanGuCaiGouTotalMoney;
-                    //sellEntity.CaiGouContractNo = sellModel.CaiGouContractNo;
-                    //sellEntity.ZanGuCaiGouNoTaxTotalMoney = sellModel.ZanGuCaiGouNoTaxTotalMoney;
+                    sellEntity.CaiGouDanJia = sellModel.CaiGouDanJia;
+                    sellEntity.ZanGuCaiGouZongJia = sellModel.ZanGuCaiGouZongJia;
+                    sellEntity.CaiGouContractNo = sellModel.CaiGouContractNo;
+                    sellEntity.ZanGuCaiGouBuHanShuiJinE = sellModel.ZanGuCaiGouBuHanShuiJinE;
 
                     outputSellEntityList.Add(sellEntity);
                 }
