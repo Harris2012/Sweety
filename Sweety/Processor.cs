@@ -199,20 +199,38 @@ namespace Sweety
                 FindMapping(sellModel, mappingModelList);
             }
 
-            //有货号的本期销项明细表
-            var sellModelWithProductNoList = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo)).ToList();
-            // Step 2. 【处理本期销项明细】查找"直运"
-            foreach (var sellModel in sellModelWithProductNoList)
+            //处理【本期销项明细表】【直运】
             {
-                Step1_FindDirectBusiness(sellModel, buyModelList);
+                // 单项直运
+                {
+                    var sellModelList_WithProductNo = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo)).ToList();
+                    foreach (var sellModel in sellModelList_WithProductNo)
+                    {
+                        Step1_FindDirectBusiness(sellModel, buyModelList);
+                    }
+                }
+
+                //多项累加直运
+                {
+                    var sellModelList_GroupByProductNo = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == SellModelSaleMode.None).GroupBy(v => v.ProductNo).ToList();
+                    foreach (var productNo in sellModelList_GroupByProductNo)
+                    {
+                        Step1_FindDirectBusiness(productNo.Key, productNo.ToList(), buyModelList);
+                    }
+                }
+
+                //Step 2.2. 【处理本期销项明细】查找直运
             }
 
             // Step 3.【处理本期销项明细】在商务报表查找符合条件的"结算前期库存"
-            var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == SellModelSaleMode.None).ToList();
-            foreach (var sellModel in sellModelList2)
             {
-                Step2_ProcessJieSuanQianQiKuCun(sellModel, mappingModelList);
+                var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == SellModelSaleMode.None).ToList();
+                foreach (var sellModel in sellModelList2)
+                {
+                    Step2_ProcessJieSuanQianQiKuCun(sellModel, mappingModelList);
+                }
             }
+
         }
 
         /// <summary>
@@ -289,6 +307,35 @@ namespace Sweety
                     //设置进项
                     buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
                     //buyModel.XiaoFangMinCheng=buymode
+                }
+            }
+        }
+
+        private static void Step1_FindDirectBusiness(string productNo, List<SellModel> sellModelList, List<BuyModel> buyModelList)
+        {
+            //在本期销项明细中查找货号
+            var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(sellModelList) && v.SellMode == BuyModelSaleMode.None).ToList();
+
+            //货物的数目之和相等
+            double sellKuCun = sellModelList.Sum(v => v.ProductCount);
+            double buyKuCun = buyModelList_ProductNoMatched.Sum(v => v.ReceiveTicketCount);
+            if (sellKuCun == buyKuCun)
+            {
+                //Set 销项
+                List<string> caiGouKuCunList = buyModelList.Select(v => v.BuyContractNo).Distinct().ToList();
+                List<string> caiGouDanWeiList = buyModelList.Select(v => v.XiaoFangMinCheng).Distinct().ToList();
+                foreach (var sellModel in sellModelList)
+                {
+                    sellModel.SetSellMode(SellModelSaleMode.DirectBusiness);
+                    sellModel.SetKuCun(sellKuCun - sellModel.ProductCount);
+                    sellModel.SetCaiGouContractNo(string.Join(";", caiGouKuCunList));
+                    sellModel.SetCaiGouDanWei(string.Join(";", caiGouDanWeiList));
+                }
+
+                //Set 进项
+                foreach (var buyModel in buyModelList_ProductNoMatched)
+                {
+                    buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
                 }
             }
         }
