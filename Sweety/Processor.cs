@@ -128,6 +128,12 @@ namespace Sweety
                     continue;
                 }
 
+                //合同状态
+                if (!"正常".Equals(mappingEntity.ContractStatus))
+                {
+                    continue;
+                }
+
                 MappingModel mappingModel = new MappingModel();
 
                 mappingModel.Id = mappingEntity.Id;
@@ -135,28 +141,30 @@ namespace Sweety
                 mappingModel.ContractNo = mappingEntity.ContractNo;
                 mappingModel.ProductNo = mappingEntity.ProductNo;
                 mappingModel.GroupCategory = mappingEntity.GroupCategory;
+                mappingModel.ChengJiaoDunShu = mappingEntity.ChengJiaoDunShu;
+                mappingModel.GouXiaoHeTongTaiTou = mappingEntity.GouXiaoHeTongTaiTou;
 
                 //合同状态
-                switch (mappingEntity.ContractStatus)
-                {
-                    case "正常":
-                        {
-                            mappingModel.ContractStatus = 1;
-                        }
-                        break;
-                    case "撤单":
-                        {
-                            mappingModel.ContractStatus = 2;
-                        }
-                        break;
-                    case "撤单-还利差":
-                        {
-                            mappingModel.ContractStatus = 3;
-                        }
-                        break;
-                    default:
-                        break;
-                }
+                //switch (mappingEntity.ContractStatus)
+                //{
+                //    case "正常":
+                //        {
+                //            mappingModel.ContractStatus = 1;
+                //        }
+                //        break;
+                //    case "撤单":
+                //        {
+                //            mappingModel.ContractStatus = 2;
+                //        }
+                //        break;
+                //    case "撤单-还利差":
+                //        {
+                //            mappingModel.ContractStatus = 3;
+                //        }
+                //        break;
+                //    default:
+                //        break;
+                //}
 
                 mappingModelList.Add(mappingModel);
             }
@@ -196,11 +204,15 @@ namespace Sweety
             // Step 2. 【处理本期销项明细】查找"直运"
             foreach (var sellModel in sellModelWithProductNoList)
             {
-                FindDirectBusiness(sellModel, buyModelList);
+                Step1_FindDirectBusiness(sellModel, buyModelList);
             }
 
             // Step 3.【处理本期销项明细】在商务报表查找符合条件的"结算前期库存"
-            var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == 0).ToList();
+            var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == SellModelSaleMode.None).ToList();
+            foreach (var sellModel in sellModelList2)
+            {
+                Step2_ProcessJieSuanQianQiKuCun(sellModel, mappingModelList);
+            }
         }
 
         /// <summary>
@@ -210,7 +222,7 @@ namespace Sweety
         /// <param name="mappingModelList"></param>
         private static void FindMapping(SellModel sellModel, List<MappingModel> mappingModelList)
         {
-            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.XiaoShouContractNo && v.ContractStatus == 1).ToList();
+            var mappings = mappingModelList.Where(v => v.ContractNo == sellModel.XiaoShouContractNo).ToList();
 
             if (mappings.Count == 1)
             {
@@ -232,7 +244,7 @@ namespace Sweety
                 if (sellModel.XiaoShouContractNo.Contains("-"))
                 {
                     var secondContractNo = sellModel.XiaoShouContractNo.Substring(0, sellModel.XiaoShouContractNo.LastIndexOf("-"));
-                    var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo && v.ContractStatus == 1).ToList();
+                    var secondMappings = mappingModelList.Where(v => v.ContractNo == secondContractNo).ToList();
 
                     if (secondMappings.Count == 1)
                     {
@@ -257,7 +269,7 @@ namespace Sweety
         /// </summary>
         /// <param name="sellModel"></param>
         /// <param name="buyModelList"></param>
-        private static void FindDirectBusiness(SellModel sellModel, List<BuyModel> buyModelList)
+        private static void Step1_FindDirectBusiness(SellModel sellModel, List<BuyModel> buyModelList)
         {
             //在本期进项明细表中查找货号
             var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo)).ToList();
@@ -286,9 +298,24 @@ namespace Sweety
         /// </summary>
         /// <param name="sellModel"></param>
         /// <param name="mappingEntityList"></param>
-        private static void ProcessJieSuanQianQiKuCun(SellModel sellModel, List<MappingEntity> mappingEntityList)
+        private static void Step2_ProcessJieSuanQianQiKuCun(SellModel sellModel, List<MappingModel> mappingModelList)
         {
+            //在商务报表中查找货号
+            var mappingModelList_ProductNoMatced = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && !v.ContractNo.Equals(sellModel.XiaoShouContractNo)).ToList();
 
+            //正好有一个货号匹配并且产品数相同，视为“结算前期库存”
+            if (mappingModelList_ProductNoMatced.Count == 1)
+            {
+                if (mappingModelList_ProductNoMatced[0].ChengJiaoDunShu == sellModel.ProductCount)
+                {
+                    var mappingModel = mappingModelList_ProductNoMatced[0];
+
+                    //设置销项
+                    sellModel.SetSellMode(SellModelSaleMode.JieSuanQianQiKuCun);
+                    sellModel.SetCaiGouContractNo(mappingModel.ContractNo);
+                    sellModel.SetCaiGouDanWei(mappingModel.GouXiaoHeTongTaiTou);
+                }
+            }
         }
 
         private static void ToOutputEntity(InputGroup inputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)

@@ -21,7 +21,7 @@ namespace Sweety.Model
         /// 2 - 撤单
         /// 3 - 还利差
         /// </summary>
-        public int ContractStatus { get; set; }
+        //public int ContractStatus { get; set; }
 
         /// <summary>
         /// 组别
@@ -42,5 +42,15 @@ namespace Sweety.Model
         /// 合同编号
         /// </summary>
         public string ContractNo { get; set; }
+
+        /// <summary>
+        /// 购销合同抬头
+        /// </summary>
+        public string GouXiaoHeTongTaiTou { get; set; }
+
+        /// <summary>
+        /// 成交吨数
+        /// </summary>
+        public double ChengJiaoDunShu { get; set; }
     }
 }
