@@ -303,6 +303,7 @@ namespace Sweety
                     sellModel.SetSellMode(SellModelSaleMode.DirectBusiness);
                     sellModel.SetCaiGouContractNo(buyModel.BuyContractNo);
                     sellModel.SetCaiGouDanWei(buyModel.XiaoFangMinCheng);
+                    sellModel.SetJinXiangShouPiaoDunShu(buyModel.ReceiveTicketCount);
 
                     //设置进项
                     buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
@@ -314,22 +315,23 @@ namespace Sweety
         private static void Step1_FindDirectBusiness(string productNo, List<SellModel> sellModelList, List<BuyModel> buyModelList)
         {
             //在本期销项明细中查找货号
-            var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(sellModelList) && v.SellMode == BuyModelSaleMode.None).ToList();
+            var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(productNo) && v.SellMode == BuyModelSaleMode.None).ToList();
 
             //货物的数目之和相等
-            double sellKuCun = sellModelList.Sum(v => v.ProductCount);
-            double buyKuCun = buyModelList_ProductNoMatched.Sum(v => v.ReceiveTicketCount);
-            if (sellKuCun == buyKuCun)
+            double sellTotalCount = sellModelList.Sum(v => v.ProductCount);
+            double buyTotalCount = buyModelList_ProductNoMatched.Sum(v => v.ReceiveTicketCount);
+            if (sellTotalCount == buyTotalCount)
             {
                 //Set 销项
-                List<string> caiGouKuCunList = buyModelList.Select(v => v.BuyContractNo).Distinct().ToList();
-                List<string> caiGouDanWeiList = buyModelList.Select(v => v.XiaoFangMinCheng).Distinct().ToList();
+                List<string> caiGouKuCunList = buyModelList_ProductNoMatched.Select(v => v.BuyContractNo).Distinct().ToList();
+                List<string> caiGouDanWeiList = buyModelList_ProductNoMatched.Select(v => v.XiaoFangMinCheng).Distinct().ToList();
                 foreach (var sellModel in sellModelList)
                 {
                     sellModel.SetSellMode(SellModelSaleMode.DirectBusiness);
-                    sellModel.SetKuCun(sellKuCun - sellModel.ProductCount);
+                    sellModel.SetKuCun(sellTotalCount - sellModel.ProductCount);
                     sellModel.SetCaiGouContractNo(string.Join(";", caiGouKuCunList));
                     sellModel.SetCaiGouDanWei(string.Join(";", caiGouDanWeiList));
+                    sellModel.SetJinXiangShouPiaoDunShu(buyTotalCount);
                 }
 
                 //Set 进项
@@ -361,6 +363,7 @@ namespace Sweety
                     sellModel.SetSellMode(SellModelSaleMode.JieSuanQianQiKuCun);
                     sellModel.SetCaiGouContractNo(mappingModel.ContractNo);
                     sellModel.SetCaiGouDanWei(mappingModel.GouXiaoHeTongTaiTou);
+                    sellModel.SetJinXiangShouPiaoDunShu(mappingModel.ChengJiaoDunShu);
                 }
             }
         }
