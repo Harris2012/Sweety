@@ -193,11 +193,14 @@ namespace Sweety
 
             //有货号的本期销项明细表
             var sellModelWithProductNoList = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo)).ToList();
-            // Step 2. 查找直运
+            // Step 2. 【处理本期销项明细】查找"直运"
             foreach (var sellModel in sellModelWithProductNoList)
             {
                 FindDirectBusiness(sellModel, buyModelList);
             }
+
+            // Step 3.【处理本期销项明细】在商务报表查找符合条件的"结算前期库存"
+            var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == 0).ToList();
         }
 
         /// <summary>
@@ -250,14 +253,16 @@ namespace Sweety
         }
 
         /// <summary>
-        /// 在本期销项明细表和本期进项明细表中找到直运的记录
+        /// Step 1. 在本期销项明细表和本期进项明细表中找到直运的记录
         /// </summary>
         /// <param name="sellModel"></param>
         /// <param name="buyModelList"></param>
         private static void FindDirectBusiness(SellModel sellModel, List<BuyModel> buyModelList)
         {
+            //在本期进项明细表中查找货号
             var buyModelList_ProductNoMatched = buyModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo)).ToList();
 
+            //正好有一个货号匹配的并且产品数相同，则视为“直运”
             if (buyModelList_ProductNoMatched.Count == 1)
             {
                 if (buyModelList_ProductNoMatched[0].ReceiveTicketCount == sellModel.ProductCount)
@@ -265,16 +270,25 @@ namespace Sweety
                     var buyModel = buyModelList_ProductNoMatched[0];
 
                     // 设置销项
-                    sellModel.SetSellMode(1);
+                    sellModel.SetSellMode(SellModelSaleMode.DirectBusiness);
                     sellModel.SetCaiGouContractNo(buyModel.BuyContractNo);
                     sellModel.SetCaiGouDanWei(buyModel.XiaoFangMinCheng);
 
-
                     //设置进项
-                    buyModel.SetSellMode(1);
+                    buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
                     //buyModel.XiaoFangMinCheng=buymode
                 }
             }
+        }
+
+        /// <summary>
+        /// Step 2. 在商务报表查找符合条件的"结算前期库存"
+        /// </summary>
+        /// <param name="sellModel"></param>
+        /// <param name="mappingEntityList"></param>
+        private static void ProcessJieSuanQianQiKuCun(SellModel sellModel, List<MappingEntity> mappingEntityList)
+        {
+
         }
 
         private static void ToOutputEntity(InputGroup inputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)
@@ -334,12 +348,25 @@ namespace Sweety
             }
         }
 
-        private static string ToSellMode(int sellStatus)
+        private static string ToSellMode(BuyModelSaleMode sellMode)
         {
-            switch (sellStatus)
+            switch (sellMode)
             {
-                case 1:
+                case BuyModelSaleMode.DirectBusiness:
                     return "直运";
+                default:
+                    return null;
+            }
+        }
+
+        private static string ToSellMode(SellModelSaleMode sellMode)
+        {
+            switch (sellMode)
+            {
+                case SellModelSaleMode.DirectBusiness:
+                    return "直运";
+                case SellModelSaleMode.JieSuanQianQiKuCun:
+                    return "结算前期库存";
                 default:
                     return null;
             }

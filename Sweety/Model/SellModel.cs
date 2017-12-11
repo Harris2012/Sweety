@@ -77,9 +77,10 @@ namespace Sweety.Model
 
         /// <summary>
         /// 1. 直运
+        /// 2. 【本期销项明细】
         /// </summary>
-        public int SellMode { get; private set; }
-        public void SetSellMode(int sellMode)
+        public SellModelSaleMode SellMode { get; private set; }
+        public void SetSellMode(SellModelSaleMode sellMode)
         {
             this.SellMode = sellMode;
         }

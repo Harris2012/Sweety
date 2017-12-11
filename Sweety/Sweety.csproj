@@ -89,9 +89,11 @@
     <Compile Include="InputEntity\BuyEntity.cs" />
     <Compile Include="ExcelHelper.cs" />
     <Compile Include="Model\BuyModel.cs" />
+    <Compile Include="Model\BuyModelSaleMode.cs" />
     <Compile Include="Model\InputGroup.cs" />
     <Compile Include="Model\MappingModel.cs" />
     <Compile Include="Model\Remark.cs" />
+    <Compile Include="Model\SellModelSaleMode.cs" />
     <Compile Include="Model\SellModel.cs" />
     <Compile Include="OutputEntity\OutputBuyEntity.cs" />
     <Compile Include="OutputEntity\OutputSellEntity.cs" />

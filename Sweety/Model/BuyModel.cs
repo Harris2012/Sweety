@@ -86,8 +86,8 @@ namespace Sweety.Model
         /// <summary>
         /// 1. 直运
         /// </summary>
-        public int SellMode { get; private set; }
-        public void SetSellMode(int sellMode)
+        public BuyModelSaleMode SellMode { get; private set; }
+        public void SetSellMode(BuyModelSaleMode sellMode)
         {
             this.SellMode = sellMode;
         }
