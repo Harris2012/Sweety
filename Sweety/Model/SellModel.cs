@@ -58,6 +58,14 @@ namespace Sweety.Model
 
         #region 中间过程
         /// <summary>
+        /// 不带横线的销售合同号
+        /// </summary>
+        public string XiaoShouContractNoWithoutLine { get; private set; }
+        public void SetXiaoShouContractNoWithoutLine(string xiaoShouContractNoWithoutLine)
+        {
+            this.XiaoShouContractNoWithoutLine = xiaoShouContractNoWithoutLine;
+        }
+        /// <summary>
         /// 商务报表中的数据库编号
         /// </summary>
         public List<string> MappingIds { get; private set; }
