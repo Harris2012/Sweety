@@ -51,6 +51,12 @@ namespace Sweety.InputEntity
         public string GouXiaoHeTongTaiTou { get; set; }
 
         /// <summary>
+        /// 买/卖
+        /// </summary>
+        [ExcelColumn("卖/买", 15)]
+        public string MaiMai { get; set; }
+
+        /// <summary>
         /// 成交吨数
         /// </summary>
         [ExcelColumn("成交吨数", 16)]

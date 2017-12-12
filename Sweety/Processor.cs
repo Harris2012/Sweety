@@ -144,6 +144,18 @@ namespace Sweety
                 mappingModel.ChengJiaoDunShu = mappingEntity.ChengJiaoDunShu;
                 mappingModel.GouXiaoHeTongTaiTou = mappingEntity.GouXiaoHeTongTaiTou;
 
+                switch (mappingEntity.MaiMai)
+                {
+                    case "买":
+                        mappingModel.MaiMai = 1;
+                        break;
+                    case "卖":
+                        mappingModel.MaiMai = 2;
+                        break;
+                    default:
+                        break;
+                }
+
                 //合同状态
                 //switch (mappingEntity.ContractStatus)
                 //{
@@ -199,7 +211,7 @@ namespace Sweety
                 FindMapping(sellModel, mappingModelList);
             }
 
-            //处理【本期销项明细表】【直运】
+            //处理【本期销项明细】【直运】
             {
                 // 单项直运
                 {
@@ -218,11 +230,9 @@ namespace Sweety
                         Step1_FindDirectBusiness(productNo.Key, productNo.ToList(), buyModelList);
                     }
                 }
-
-                //Step 2.2. 【处理本期销项明细】查找直运
             }
 
-            // Step 3.【处理本期销项明细】在商务报表查找符合条件的"结算前期库存"
+            // 处理【本期销项明细】【结转前期库存】(在商务报表查找符合条件的)
             {
                 var sellModelList2 = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo) && v.SellMode == SellModelSaleMode.None).ToList();
                 foreach (var sellModel in sellModelList2)
@@ -343,28 +353,30 @@ namespace Sweety
         }
 
         /// <summary>
-        /// Step 2. 在商务报表查找符合条件的"结算前期库存"
+        /// Step 2. 在商务报表查找符合条件的"结转前期库存"
         /// </summary>
         /// <param name="sellModel"></param>
         /// <param name="mappingEntityList"></param>
         private static void Step2_ProcessJieSuanQianQiKuCun(SellModel sellModel, List<MappingModel> mappingModelList)
         {
             //在商务报表中查找货号
-            var mappingModelList_ProductNoMatced = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && !v.ContractNo.Equals(sellModel.XiaoShouContractNo)).ToList();
+            var mappingModelList_Buy = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && v.MaiMai == 2).ToList();
+            var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && v.MaiMai == 1).ToList();
 
-            //正好有一个货号匹配并且产品数相同，视为“结算前期库存”
-            if (mappingModelList_ProductNoMatced.Count == 1)
+            var buyTotalCount = mappingModelList_Buy.Sum(v => v.ChengJiaoDunShu);
+            var sellTotalCount = mappingModelList_Sell.Sum(v => v.ChengJiaoDunShu);
+
+            if (buyTotalCount == sellTotalCount)
             {
-                if (mappingModelList_ProductNoMatced[0].ChengJiaoDunShu == sellModel.ProductCount)
-                {
-                    var mappingModel = mappingModelList_ProductNoMatced[0];
+                List<string> butContractNoList = mappingModelList_Buy.Select(v => v.ContractNo).Distinct().ToList();
+                List<string> gouXiaoHeTongTaiTou = mappingModelList_Buy.Select(v => v.GouXiaoHeTongTaiTou).Distinct().ToList();
 
-                    //设置销项
-                    sellModel.SetSellMode(SellModelSaleMode.JieSuanQianQiKuCun);
-                    sellModel.SetCaiGouContractNo(mappingModel.ContractNo);
-                    sellModel.SetCaiGouDanWei(mappingModel.GouXiaoHeTongTaiTou);
-                    sellModel.SetJinXiangShouPiaoDunShu(mappingModel.ChengJiaoDunShu);
-                }
+                //设置销项
+                sellModel.SetSellMode(SellModelSaleMode.JieSuanQianQiKuCun);
+                sellModel.SetCaiGouContractNo(string.Join(";", butContractNoList));
+                sellModel.SetCaiGouDanWei(string.Join(";", gouXiaoHeTongTaiTou));
+                sellModel.SetJinXiangShouPiaoDunShu(buyTotalCount);
+                sellModel.SetKuCun(buyTotalCount - sellModel.ProductCount);
             }
         }
 
@@ -443,7 +455,7 @@ namespace Sweety
                 case SellModelSaleMode.DirectBusiness:
                     return "直运";
                 case SellModelSaleMode.JieSuanQianQiKuCun:
-                    return "结算前期库存";
+                    return "结转前期库存";
                 default:
                     return null;
             }

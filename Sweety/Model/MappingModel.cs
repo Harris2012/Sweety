@@ -52,5 +52,11 @@ namespace Sweety.Model
         /// 成交吨数
         /// </summary>
         public double ChengJiaoDunShu { get; set; }
+
+        /// <summary>
+        /// 1.买
+        /// 2.卖
+        /// </summary>
+        public int MaiMai { get; set; }
     }
 }
