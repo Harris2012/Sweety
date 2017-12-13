@@ -215,13 +215,13 @@ namespace Sweety
             var buyModelList = inputGroup.BuyModelList;
             var mappingModelList = inputGroup.MappingModelList;
 
-            // Step 1. 从商务报表中找到“本期销项明细”表中销售合同号对应的货号，填充到本期销项明细表中
+            // 【匹配货号】Step 1. 从商务报表中找到“本期销项明细”表中销售合同号对应的货号，填充到本期销项明细表中
             foreach (var sellModel in sellModelList)
             {
                 FindMapping(sellModel, mappingModelList);
             }
 
-            //对于找到多个货号的销售合同号，尝试进行匹配
+            //【匹配货号】对于找到多个货号的销售合同号，尝试进行匹配
             {
                 var sellModelList_WithoutProductNo = sellModelList.Where(v => string.IsNullOrEmpty(v.ProductNo)
                     && (v.Remarks.Contains(Remark.FindMultiContractNoInMapping) || v.Remarks.Contains(Remark.FindMultiContractNoInMappingUsingSecondContractId))).ToList();
@@ -272,6 +272,14 @@ namespace Sweety
                 }
             }
 
+            //处理【本期进项明细】【抵消前期暂估】(在商务报表中查找符合条件的)
+            {
+                var buyModelList2 = buyModelList.Where(v => v.SellMode == BuyModelSaleMode.None).ToList();
+                foreach (var buyModel in buyModelList2)
+                {
+                    Step2_PromotionDiXiaoQianQiZanGu(buyModel, mappingModelList);
+                }
+            }
         }
 
         /// <summary>
@@ -410,6 +418,26 @@ namespace Sweety
             }
         }
 
+        /// <summary>
+        /// Step 2. 在商务报表中查找符合条件的"抵消前期暂估"
+        /// </summary>
+        /// <param name="buyModel"></param>
+        /// <param name="mappingModelList"></param>
+        private static void Step2_PromotionDiXiaoQianQiZanGu(BuyModel buyModel, List<MappingModel> mappingModelList)
+        {
+            //在商务报表中查找货号
+            var mappingModelList_Buy = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 2).ToList();
+            var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 1).ToList();
+
+            var buyTotalCount = mappingModelList_Buy.Sum(v => v.ChengJiaoDunShu);
+            var sellTotalCount = mappingModelList_Sell.Sum(v => v.ChengJiaoDunShu);
+
+            if (buyTotalCount == sellTotalCount)
+            {
+                buyModel.SetSellMode(BuyModelSaleMode.DiXiaoQianQiZanGu);
+            }
+        }
+
         private static void ToOutputEntity(InputGroup inputGroup, List<OutputBuyEntity> outputBuyEntityList, List<OutputSellEntity> outputSellEntityList)
         {
             //本期销项明细
@@ -473,6 +501,8 @@ namespace Sweety
             {
                 case BuyModelSaleMode.DirectBusiness:
                     return "直运";
+                case BuyModelSaleMode.DiXiaoQianQiZanGu:
+                    return "抵消前期暂估";
                 default:
                     return null;
             }

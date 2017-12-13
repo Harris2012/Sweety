@@ -15,6 +15,11 @@ namespace Sweety.Model
         /// <summary>
         /// 直运
         /// </summary>
-        DirectBusiness = 1
+        DirectBusiness = 1,
+
+        /// <summary>
+        /// 抵消前期暂估
+        /// </summary>
+        DiXiaoQianQiZanGu = 2
     }
 }
