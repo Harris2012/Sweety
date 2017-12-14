@@ -153,6 +153,8 @@ namespace Sweety
                 mappingModel.GroupCategory = mappingEntity.GroupCategory;
                 mappingModel.ChengJiaoDunShu = mappingEntity.ChengJiaoDunShu;
                 mappingModel.GouXiaoHeTongTaiTou = mappingEntity.GouXiaoHeTongTaiTou;
+                mappingModel.FaPiaoShiJian = mappingEntity.FaPiaoShiJian;
+                mappingModel.FaPiaoHaoMa = mappingEntity.FaPiaoHaoMa;
 
                 switch (mappingEntity.MaiMai)
                 {
@@ -427,7 +429,7 @@ namespace Sweety
         {
             //在商务报表中查找货号
             var mappingModelList_Buy = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 2).ToList();
-            var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 1).ToList();
+            var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 1 && v.FaPiaoShiJian != DateTime.MinValue && !string.IsNullOrEmpty(v.FaPiaoHaoMa)).ToList();
 
             var buyTotalCount = mappingModelList_Buy.Sum(v => v.ChengJiaoDunShu);
             var sellTotalCount = mappingModelList_Sell.Sum(v => v.ChengJiaoDunShu);

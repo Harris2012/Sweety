@@ -58,5 +58,15 @@ namespace Sweety.Model
         /// 2.卖
         /// </summary>
         public int MaiMai { get; set; }
+
+        /// <summary>
+        /// 开出/收到发票时间
+        /// </summary>
+        public DateTime FaPiaoShiJian { get; set; }
+
+        /// <summary>
+        /// 发票号码
+        /// </summary>
+        public string FaPiaoHaoMa { get; set; }
     }
 }

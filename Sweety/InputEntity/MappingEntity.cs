@@ -61,5 +61,12 @@ namespace Sweety.InputEntity
         /// </summary>
         [ExcelColumn("成交吨数", 16)]
         public double ChengJiaoDunShu { get; set; }
+
+        [ExcelColumn("开出/收到发票时间", 42)]
+        public DateTime FaPiaoShiJian { get; set; }
+
+        [ExcelColumn("发票号码", 46)]
+        public string FaPiaoHaoMa { get; set; }
+
     }
 }

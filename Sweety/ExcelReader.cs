@@ -9,6 +9,8 @@ namespace Sweety
 {
     class ExcelReader
     {
+        private static readonly DateTime DefaultDay = new DateTime(1900, 1, 1);
+
         public static List<T> ReadEntityList<T>(string inputFilePath, string tableName) where T : class, new()
         {
             var table = GetExcelTableByOleDB(inputFilePath, tableName);
@@ -111,9 +113,27 @@ namespace Sweety
                             case "System.Decimal":
                                 {
                                     decimal decimalValue = 0;
-                                    if (decimal.TryParse(value,out decimalValue))
+                                    if (decimal.TryParse(value, out decimalValue))
                                     {
                                         property.SetValue(entity, decimalValue, null);
+                                    }
+                                }
+                                break;
+                            case "System.DateTime":
+                                {
+                                    int intValue = 0;
+                                    DateTime dateTimeValue = DateTime.MinValue;
+                                    if (!string.IsNullOrEmpty(value))
+                                    {
+                                        if (DateTime.TryParse(value, out dateTimeValue))
+                                        {
+                                            property.SetValue(entity, dateTimeValue, null);
+                                        }
+                                        else if (int.TryParse(value, out intValue))
+                                        {
+                                            dateTimeValue = DefaultDay.AddDays(intValue);
+                                            property.SetValue(entity, dateTimeValue, null);
+                                        }
                                     }
                                 }
                                 break;
