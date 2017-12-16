@@ -151,9 +151,10 @@ namespace Sweety
                 mappingModel.ContractNo = mappingEntity.ContractNo;
                 mappingModel.ProductNo = mappingEntity.ProductNo;
                 mappingModel.GroupCategory = mappingEntity.GroupCategory;
-                mappingModel.ChengJiaoDunShu = mappingEntity.ChengJiaoDunShu;
+                //mappingModel.ChengJiaoDunShu = mappingEntity.ChengJiaoDunShu;
                 mappingModel.GouXiaoHeTongTaiTou = mappingEntity.GouXiaoHeTongTaiTou;
                 mappingModel.FaPiaoShiJian = mappingEntity.FaPiaoShiJian;
+                mappingModel.KaiChuShouDaoFaPiaoDunShu = mappingEntity.KaiChuShouDaoFaPiaoDunShu;
                 mappingModel.FaPiaoHaoMa = mappingEntity.FaPiaoHaoMa;
 
                 switch (mappingEntity.MaiMai)
@@ -221,6 +222,18 @@ namespace Sweety
             foreach (var sellModel in sellModelList)
             {
                 FindMapping(sellModel, mappingModelList);
+            }
+
+            //标出销项明细表中同货号的记录
+            {
+                var items = sellModelList.Where(v => !string.IsNullOrEmpty(v.ProductNo)).GroupBy(v => v.ProductNo).Where(v => v.Count() > 1).ToList();
+                foreach (var item in items)
+                {
+                    foreach (var sellModel in item)
+                    {
+                        sellModel.Remarks.Add(Remark.FindMultiProductNoInSell);
+                    }
+                }
             }
 
             //【匹配货号】对于找到多个货号的销售合同号，尝试进行匹配
@@ -403,8 +416,8 @@ namespace Sweety
             var mappingModelList_Buy = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && v.MaiMai == 2).ToList();
             var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(sellModel.ProductNo) && v.MaiMai == 1).ToList();
 
-            var buyTotalCount = mappingModelList_Buy.Sum(v => v.ChengJiaoDunShu);
-            var sellTotalCount = mappingModelList_Sell.Sum(v => v.ChengJiaoDunShu);
+            var buyTotalCount = mappingModelList_Buy.Sum(v => v.KaiChuShouDaoFaPiaoDunShu);
+            var sellTotalCount = mappingModelList_Sell.Sum(v => v.KaiChuShouDaoFaPiaoDunShu);
 
             if (buyTotalCount == sellTotalCount)
             {
@@ -431,8 +444,8 @@ namespace Sweety
             var mappingModelList_Buy = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 2).ToList();
             var mappingModelList_Sell = mappingModelList.Where(v => v.ProductNo.Equals(buyModel.ProductNo) && v.MaiMai == 1 && v.FaPiaoShiJian != DateTime.MinValue && !string.IsNullOrEmpty(v.FaPiaoHaoMa)).ToList();
 
-            var buyTotalCount = mappingModelList_Buy.Sum(v => v.ChengJiaoDunShu);
-            var sellTotalCount = mappingModelList_Sell.Sum(v => v.ChengJiaoDunShu);
+            var buyTotalCount = mappingModelList_Buy.Sum(v => v.KaiChuShouDaoFaPiaoDunShu);
+            var sellTotalCount = mappingModelList_Sell.Sum(v => v.KaiChuShouDaoFaPiaoDunShu);
 
             if (buyTotalCount == sellTotalCount)
             {

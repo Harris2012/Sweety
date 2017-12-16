@@ -51,7 +51,7 @@ namespace Sweety.Model
         /// <summary>
         /// 成交吨数
         /// </summary>
-        public double ChengJiaoDunShu { get; set; }
+        //public double ChengJiaoDunShu { get; set; }
 
         /// <summary>
         /// 1.买
@@ -63,6 +63,11 @@ namespace Sweety.Model
         /// 开出/收到发票时间
         /// </summary>
         public DateTime FaPiaoShiJian { get; set; }
+
+        /// <summary>
+        /// 开出/收到发票吨数
+        /// </summary>
+        public double KaiChuShouDaoFaPiaoDunShu { get; set; }
 
         /// <summary>
         /// 发票号码
