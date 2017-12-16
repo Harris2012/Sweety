@@ -97,6 +97,7 @@
     <Compile Include="Model\SellModel.cs" />
     <Compile Include="OutputEntity\OutputBuyEntity.cs" />
     <Compile Include="OutputEntity\OutputSellEntity.cs" />
+    <Compile Include="OutputEntity\RemarkEntity.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Status.cs" />
     <Compile Include="StatusItem.cs" />

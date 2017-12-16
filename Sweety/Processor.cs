@@ -25,8 +25,28 @@ namespace Sweety
 
             ToOutputEntity(inputGroup, outputBuyEntityList, outputSellEntityList);
 
+            ExcelHelper.WriteToExcel(outputFilePath, getRemarkList());
             ExcelHelper.WriteToExcel(outputFilePath, outputBuyEntityList);
             ExcelHelper.WriteToExcel(outputFilePath, outputSellEntityList);
+        }
+
+        private static List<RemarkEntity> getRemarkList()
+        {
+            List<RemarkEntity> returnValue = new List<RemarkEntity>();
+
+            returnValue.Add(ToRemarkEntity(Remark._2001_FindZeroContractNoInMapping));
+            returnValue.Add(ToRemarkEntity(Remark._2002_FindMultiContractNoInMapping));
+            returnValue.Add(ToRemarkEntity(Remark._2003_FindOneContractNoInMappingUsingSecondContractId));
+            returnValue.Add(ToRemarkEntity(Remark._2004_FindMultiContractNoInMappingUsingSecondContractId));
+            returnValue.Add(ToRemarkEntity(Remark._2005_UsingPossibleProductNo));
+            returnValue.Add(ToRemarkEntity(Remark._2006_FindMultiProductNoInSell));
+
+            return returnValue;
+        }
+
+        private static RemarkEntity ToRemarkEntity(Remark remark)
+        {
+            return new RemarkEntity { Id = string.Format("R{0}", remark.RemarkNo), Message = remark.Message };
         }
 
         /// <summary>
