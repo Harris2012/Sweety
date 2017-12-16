@@ -231,7 +231,7 @@ namespace Sweety
                 {
                     foreach (var sellModel in item)
                     {
-                        sellModel.Remarks.Add(Remark.FindMultiProductNoInSell);
+                        sellModel.Remarks.Add(Remark._2006_FindMultiProductNoInSell);
                     }
                 }
             }
@@ -239,7 +239,7 @@ namespace Sweety
             //【匹配货号】对于找到多个货号的销售合同号，尝试进行匹配
             {
                 var sellModelList_WithoutProductNo = sellModelList.Where(v => string.IsNullOrEmpty(v.ProductNo)
-                    && (v.Remarks.Contains(Remark.FindMultiContractNoInMapping) || v.Remarks.Contains(Remark.FindMultiContractNoInMappingUsingSecondContractId))).ToList();
+                    && (v.Remarks.Contains(Remark._2002_FindMultiContractNoInMapping) || v.Remarks.Contains(Remark._2004_FindMultiContractNoInMappingUsingSecondContractId))).ToList();
 
                 var sellModelGroups = sellModelList_WithoutProductNo.GroupBy(v => v.XiaoShouContractNoWithoutLine).ToList();
                 foreach (var sellModelGroup in sellModelGroups)
@@ -250,8 +250,8 @@ namespace Sweety
                         var sellModelList_ContractNoMatched = sellModelGroup.ToList();
                         for (int i = 0; i < sellModelList_ContractNoMatched.Count; i++)
                         {
-                            sellModelList_ContractNoMatched[i].SetProductNo(mappingModelList_ContractNoMatched[i].ProductNo);
-                            sellModelList_ContractNoMatched[i].Remarks.Add(Remark.UsingPossibleProductNo);
+                            sellModelList_ContractNoMatched[i].SetProductNo(mappingModelList_ContractNoMatched[i].ProductNo, mappingModelList_ContractNoMatched[i].Id);
+                            sellModelList_ContractNoMatched[i].Remarks.Add(Remark._2005_UsingPossibleProductNo);
                         }
                     }
                 }
@@ -308,20 +308,20 @@ namespace Sweety
 
             if (mappings.Count == 1)
             {
-                sellModel.SetProductNo(mappings[0].ProductNo);
+                sellModel.SetProductNo(mappings[0].ProductNo, mappings[0].Id);
                 return;
             }
 
             if (mappings.Count > 1)
             {
                 sellModel.SetMappingIds(mappings.Select(v => v.Id).ToList());
-                sellModel.Remarks.Add(Remark.FindMultiContractNoInMapping);
+                sellModel.Remarks.Add(Remark._2002_FindMultiContractNoInMapping);
                 return;
             }
 
             if (mappings.Count == 0)
             {
-                sellModel.Remarks.Add(Remark.FindZeroContractNoInMapping);
+                sellModel.Remarks.Add(Remark._2001_FindZeroContractNoInMapping);
 
                 if (!sellModel.XiaoShouContractNo.Equals(sellModel.XiaoShouContractNoWithoutLine))
                 {
@@ -329,16 +329,16 @@ namespace Sweety
 
                     if (secondMappings.Count == 1)
                     {
-                        sellModel.SetProductNo(secondMappings[0].ProductNo);
+                        sellModel.SetProductNo(secondMappings[0].ProductNo, secondMappings[0].Id);
                         sellModel.SetMappingIds(secondMappings.Select(v => v.Id).ToList());
-                        sellModel.Remarks.Add(Remark.FindOneContractNoInMappingUsingSecondContractId);
+                        sellModel.Remarks.Add(Remark._2003_FindOneContractNoInMappingUsingSecondContractId);
                         return;
                     }
 
                     if (secondMappings.Count > 1)
                     {
                         sellModel.SetMappingIds(secondMappings.Select(v => v.Id).ToList());
-                        sellModel.Remarks.Add(Remark.FindMultiContractNoInMappingUsingSecondContractId);
+                        sellModel.Remarks.Add(Remark._2004_FindMultiContractNoInMappingUsingSecondContractId);
                         return;
                     }
                 }
@@ -367,10 +367,11 @@ namespace Sweety
                     sellModel.SetCaiGouContractNo(buyModel.BuyContractNo);
                     sellModel.SetCaiGouDanWei(buyModel.XiaoFangMinCheng);
                     sellModel.SetJinXiangShouPiaoDunShu(buyModel.ReceiveTicketCount);
+                    sellModel.RelativeBusinessIds.Add(buyModel.Id);
 
                     //设置进项
                     buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
-                    //buyModel.XiaoFangMinCheng=buymode
+                    buyModel.RelativeBusinessIds.Add(sellModel.BusinessNo);
                 }
             }
         }
@@ -395,12 +396,14 @@ namespace Sweety
                     sellModel.SetCaiGouContractNo(string.Join(";", caiGouKuCunList));
                     sellModel.SetCaiGouDanWei(string.Join(";", caiGouDanWeiList));
                     sellModel.SetJinXiangShouPiaoDunShu(buyTotalCount);
+                    sellModel.RelativeBusinessIds.AddRange(buyModelList_ProductNoMatched.Select(v => v.Id));
                 }
 
                 //Set 进项
                 foreach (var buyModel in buyModelList_ProductNoMatched)
                 {
                     buyModel.SetSellMode(BuyModelSaleMode.DirectBusiness);
+                    buyModel.RelativeBusinessIds.AddRange(sellModelList.Select(v => v.BusinessNo));
                 }
             }
         }
@@ -430,6 +433,9 @@ namespace Sweety
                 sellModel.SetCaiGouDanWei(string.Join(";", gouXiaoHeTongTaiTou));
                 sellModel.SetJinXiangShouPiaoDunShu(buyTotalCount);
                 sellModel.SetKuCun(buyTotalCount - sellModel.ProductCount);
+                sellModel.RelativeBusinessIds.AddRange(mappingModelList_Buy.Select(v => v.Id));
+                sellModel.RelativeBusinessIds.AddRange(mappingModelList_Sell.Select(v => v.Id));
+                sellModel.RelativeBusinessIds.RemoveAll(v => sellModel.BusinessNo == v);
             }
         }
 
@@ -450,6 +456,9 @@ namespace Sweety
             if (buyTotalCount == sellTotalCount)
             {
                 buyModel.SetSellMode(BuyModelSaleMode.DiXiaoQianQiZanGu);
+                buyModel.RelativeBusinessIds.AddRange(mappingModelList_Buy.Select(v => v.Id));
+                buyModel.RelativeBusinessIds.AddRange(mappingModelList_Sell.Select(v => v.Id));
+                buyModel.RelativeBusinessIds.RemoveAll(v => v == buyModel.Id);
             }
         }
 
@@ -479,6 +488,36 @@ namespace Sweety
                     sellEntity.CaiGouContractNo = sellModel.CaiGouContractNo;
                     sellEntity.ZanGuCaiGouBuHanShuiJinE = sellModel.ZanGuCaiGouBuHanShuiJinE;
 
+                    sellEntity.BusinessNo = sellModel.BusinessNo;
+                    if (sellModel.Remarks.Contains(Remark._2001_FindZeroContractNoInMapping))
+                    {
+                        sellEntity.Remark2001 = "YES";
+                    }
+                    if (sellModel.Remarks.Contains(Remark._2002_FindMultiContractNoInMapping))
+                    {
+                        sellEntity.Remark2002 = "YES";
+                    }
+                    if (sellModel.Remarks.Contains(Remark._2003_FindOneContractNoInMappingUsingSecondContractId))
+                    {
+                        sellEntity.Remark2003 = "YES";
+                    }
+                    if (sellModel.Remarks.Contains(Remark._2004_FindMultiContractNoInMappingUsingSecondContractId))
+                    {
+                        sellEntity.Remark2004 = "YES";
+                    }
+                    if (sellModel.Remarks.Contains(Remark._2005_UsingPossibleProductNo))
+                    {
+                        sellEntity.Remark2005 = "YES";
+                    }
+                    if (sellModel.Remarks.Contains(Remark._2006_FindMultiProductNoInSell))
+                    {
+                        sellEntity.Remark2006 = "YES";
+                    }
+                    if (sellModel.RelativeBusinessIds.Count > 0)
+                    {
+                        sellEntity.RelativeBusinessIds = string.Join(";", sellModel.RelativeBusinessIds);
+                    }
+
                     outputSellEntityList.Add(sellEntity);
                 }
             }
@@ -504,6 +543,11 @@ namespace Sweety
                     buyEntity.ReceiveTicketCount = buyModel.ReceiveTicketCount;
                     buyEntity.ShangPinHanShuiDanJia = buyModel.ShangPinHanShuiDanJia;
                     buyEntity.SellMode = ToSellMode(buyModel.SellMode);
+
+                    if (buyModel.RelativeBusinessIds.Count > 0)
+                    {
+                        buyEntity.RelativeBusinessIds = string.Join(";", buyModel.RelativeBusinessIds);
+                    }
 
                     outputBuyEntityList.Add(buyEntity);
                 }

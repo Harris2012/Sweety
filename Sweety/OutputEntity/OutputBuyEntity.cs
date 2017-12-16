@@ -91,5 +91,11 @@ namespace Sweety.OutputEntity
         /// </summary>
         [ExcelColumn("类型", 14)]
         public string SellMode { get; set; }
+
+        /// <summary>
+        /// 相关记录项
+        /// </summary>
+        [ExcelColumn("相关记录项", 15)]
+        public string RelativeBusinessIds { get; set; }
     }
 }

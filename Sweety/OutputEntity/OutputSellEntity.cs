@@ -103,5 +103,35 @@ namespace Sweety.OutputEntity
         /// </summary>
         [ExcelColumn("暂估采购不含税金额", 16)]
         public decimal ZanGuCaiGouBuHanShuiJinE { get; set; }
+
+        [ExcelColumn("R2001", 17)]
+        public string Remark2001 { get; set; }
+
+        [ExcelColumn("R2002", 18)]
+        public string Remark2002 { get; set; }
+
+        [ExcelColumn("R2003", 19)]
+        public string Remark2003 { get; set; }
+
+        [ExcelColumn("R2004", 20)]
+        public string Remark2004 { get; set; }
+
+        [ExcelColumn("R2005", 21)]
+        public string Remark2005 { get; set; }
+
+        [ExcelColumn("R2006", 22)]
+        public string Remark2006 { get; set; }
+
+        /// <summary>
+        /// 商务报表中对应的记录号
+        /// </summary>
+        [ExcelColumn("商务报表编号", 23)]
+        public string BusinessNo { get; set; }
+
+        /// <summary>
+        /// 相关记录项
+        /// </summary>
+        [ExcelColumn("相关记录项", 24)]
+        public string RelativeBusinessIds { get; set; }
     }
 }

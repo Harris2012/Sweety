@@ -13,6 +13,7 @@ namespace Sweety.Model
         public SellModel()
         {
             Remarks = new List<Remark>();
+            RelativeBusinessIds = new List<string>();
         }
 
         /// <summary>
@@ -52,8 +53,6 @@ namespace Sweety.Model
 
         #region 日志
         public List<Remark> Remarks { get; private set; }
-
-        public List<string> Messages { get; set; }
         #endregion
 
         #region 中间过程
@@ -78,9 +77,10 @@ namespace Sweety.Model
         /// 货号
         /// </summary>
         public string ProductNo { get; private set; }
-        public void SetProductNo(string productNo)
+        public void SetProductNo(string productNo, string businessNo)
         {
             this.ProductNo = productNo;
+            this.BusinessNo = businessNo;
         }
 
         /// <summary>
@@ -155,6 +155,16 @@ namespace Sweety.Model
         {
             this.JinXiangShouPiaoDunShu = jinXiangShouPiaoDunShu;
         }
+
+        /// <summary>
+        /// 商务报表中的编号
+        /// </summary>
+        public string BusinessNo { get; private set; }
+
+        /// <summary>
+        /// 商务报表中的相关记录编号
+        /// </summary>
+        public List<string> RelativeBusinessIds { get; private set; }
         #endregion
     }
 }

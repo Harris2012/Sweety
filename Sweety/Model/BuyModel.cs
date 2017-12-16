@@ -12,8 +12,8 @@ namespace Sweety.Model
     {
         public BuyModel()
         {
-            Messages = new List<string>();
             Remarks = new List<Remark>();
+            RelativeBusinessIds = new List<string>();
         }
 
         /// <summary>
@@ -78,8 +78,6 @@ namespace Sweety.Model
 
         #region 日志
         public List<Remark> Remarks { get; private set; }
-
-        public List<string> Messages { get; private set; }
         #endregion
 
         #region 中间过程变量
@@ -100,6 +98,11 @@ namespace Sweety.Model
         {
             this.ShangPinHanShuiDanJia = shangPinHanShuiDanJia;
         }
+
+        /// <summary>
+        /// 商务报表中的相关记录编号
+        /// </summary>
+        public List<string> RelativeBusinessIds { get; private set; }
         #endregion
     }
 }
